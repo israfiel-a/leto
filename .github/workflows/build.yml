@@ -4,10 +4,10 @@
 
 name: Build/Test Leto
 on:
-    pull_request:
-    push:
-        branches: [ master ]
-    workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 permissions:
     statuses: write
     contents: read

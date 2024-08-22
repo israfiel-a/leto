@@ -1,0 +1,5 @@
+/build/
+/.cache/
+/Dependencies/GLFW/
+/BuildProject.sh
+/RunProject.sh

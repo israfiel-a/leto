@@ -79,7 +79,7 @@ void GetTimestamp(timestamp_t* storage, timestamp_format_t format)
 
     if (millisecond_count >= 1000)
     {
-        storage->seconds = millisecond_count / 1000;
+        storage->seconds = (uint8_t)(millisecond_count / 1000);
         storage->milliseconds = millisecond_count % 1000;
     }
     if (storage->seconds >= 60)

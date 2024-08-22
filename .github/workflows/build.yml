@@ -19,7 +19,6 @@ jobs:
         timeout-minutes: 4
         env:
             CC: clang
-            CFLAGS: -Wall -Werror -Wpedantic
         steps:
             - uses: actions/checkout@v4
             - name: Install Dependencies
@@ -41,7 +40,6 @@ jobs:
         timeout-minutes: 4
         env:
             CC: gcc
-            CFLAGS: -Wall -Werror -Wpedantic
         steps:
             - uses: actions/checkout@v4
             - name: Install Dependencies

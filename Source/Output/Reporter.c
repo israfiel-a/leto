@@ -1,5 +1,9 @@
 #include "Reporter.h"
 #include <Diagnostic/Time.h>
+#include <Utilities/Strings.h>
+#include <errno.h>
+#include <glad.h>
+#include <glfw3.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -50,12 +54,22 @@ void ReportError_(const char* file, const char* function, uint32_t line,
     if (code == error_code_count) { exit(EXIT_FAILURE); }
     const reported_message_t reported_error = errors[code];
 
+    int extra_info = 0;
+    switch (reported_error.type.error)
+    {
+        case os:     extra_info = errno;
+        case glfw:   glfwGetError(NULL);
+        case opengl: extra_info = glGetError();
+        default:     break;
+    }
+
     printf("\033[1;31m--\n-- !! Leto Error !!\n-- From:\033[0;31m %s :: "
            "%s(), ln. %d\n\033[1m-- Info: \n--   Kind:\033[0;31m "
            "0x%x\n\033[1m--   Code:\033[0;31m %d :: %s\n\033[1m--   "
-           "Description:\033[0;31m %s\033[1m\n--\033[0m\n",
+           "Description:\033[0;31m %s\n--    Extra:\033[0;31m "
+           "%d\033[1m\n--\033[0m\n",
            file, function, line, reported_error.type.error, code,
-           reported_error.name, reported_error.description);
+           reported_error.name, reported_error.description, extra_info);
 
     exit(EXIT_FAILURE);
 }

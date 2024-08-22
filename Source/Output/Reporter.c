@@ -57,9 +57,9 @@ void ReportError_(const char* file, const char* function, uint32_t line,
     int extra_info = 0;
     switch (reported_error.type.error)
     {
-        case os:     extra_info = errno;
-        case glfw:   glfwGetError(NULL);
-        case opengl: extra_info = glGetError();
+        case os:     extra_info = errno; break;
+        case glfw:   extra_info = glfwGetError(NULL); break;
+        case opengl: extra_info = glGetError(); break;
         default:     break;
     }
 

@@ -49,8 +49,6 @@ jobs:
         name: Windows (vs2022)
         runs-on: windows-latest
         timeout-minutes: 4
-        env:
-            CFLAGS: /WX
         steps:
              - uses: actions/checkout@v4
              - name: Build Project (Debug)

@@ -10,6 +10,7 @@
 #if defined(__LETO__LINUX__)
     #include <time.h>
 #elif defined(__LETO__WINDOWS__)
+    #define WIN32_LEAN_AND_MEAN
     #include <Windows.h>
     #include <profileapi.h>
 #endif

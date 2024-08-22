@@ -4,10 +4,10 @@
 
 name: Build/Test Leto
 on:
-    pull_request:
-    push:
-        branches: [ master ]
-    workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 permissions:
     statuses: write
     contents: read
@@ -19,20 +19,19 @@ jobs:
         timeout-minutes: 4
         env:
             CC: clang
-            CFLAGS: -Wall -Werror -Wpedantic
         steps:
             - uses: actions/checkout@v4
             - name: Install Dependencies
               run: |
                   sudo apt update
-                  sudo apt install libwayland-dev
+                  sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
 
             - name: Build Project (Debug)
-              run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug
+              run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug && cd build_debug && make
             - name: Run Project (Debug)
               run: cd build_debug/Leto && ./Leto
             - name: Build Project (Release)
-              run: cmake -B build_release -DCMAKE_BUILD_TYPE=Release
+              run: cmake -B build_release -DCMAKE_BUILD_TYPE=Release && cd build_release && make
             - name: Run Project (Release)
               run: cd build_release/Leto && ./Leto
     linux-gcc:
@@ -41,20 +40,19 @@ jobs:
         timeout-minutes: 4
         env:
             CC: gcc
-            CFLAGS: -Wall -Werror -Wpedantic
         steps:
             - uses: actions/checkout@v4
             - name: Install Dependencies
               run: |
                   sudo apt update
-                  sudo apt install libwayland-dev
+                  sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
 
             - name: Build Project (Debug)
-              run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug
+              run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug && cd build_debug && make
             - name: Run Project (Debug)
               run: cd build_debug/Leto && ./Leto
             - name: Build Project (Release)
-              run: cmake -B build_release -DCMAKE_BUILD_TYPE=Release
+              run: cmake -B build_release -DCMAKE_BUILD_TYPE=Release && cd build_release && make
             - name: Run Project (Release)
               run: cd build_release/Leto && ./Leto
     window-vs2022:

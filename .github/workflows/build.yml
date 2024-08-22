@@ -24,10 +24,9 @@ jobs:
             - name: Install Dependencies
               run: |
                   sudo apt update
-                  sudo apt install gnome-desktop libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
+                  sudo apt install ubuntu-gnome-desktop libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
             - name: Create False Display
               run: |
-                  gnome-session
                   gnome-shell --wayland --wayland-display 0 --headless --virtual-monitor 1920x1080
             - name: Build Project (Debug)
               run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug && cd build_debug && make

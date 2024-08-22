@@ -29,9 +29,9 @@ jobs:
               run: |
                   mkdir -p ~/.config/systemd/user/org.gnome.Shell@wayland.service.d
                   touch ~/.config/systemd/user/org.gnome.Shell@wayland.service.d/persistent-virtual-monitor.conf
-                  echo [Service] > ~/.config/systemd/user/org.gnome.Shell@wayland.service.d/persistent-virtual-monitor.conf
-                  echo ExecStart= > ~/.config/systemd/user/org.gnome.Shell@wayland.service.d/persistent-virtual-monitor.conf
-                  echo ExecStart=\nExecStart=/usr/bin/gnome-shell --virtual-monitor 1920x1080 > ~/.config/systemd/user/org.gnome.Shell@wayland.service.d/persistent-virtual-monitor.conf
+                  echo "[Service]" > ~/.config/systemd/user/org.gnome.Shell@wayland.service.d/persistent-virtual-monitor.conf
+                  echo "ExecStart=" >> ~/.config/systemd/user/org.gnome.Shell@wayland.service.d/persistent-virtual-monitor.conf
+                  echo "ExecStart=/usr/bin/gnome-shell --virtual-monitor 1920x1080" >> ~/.config/systemd/user/org.gnome.Shell@wayland.service.d/persistent-virtual-monitor.conf
                   cat ~/.config/systemd/user/org.gnome.Shell@wayland.service.d/persistent-virtual-monitor.conf
                   systemctl --user daemon-reload
                   gnome-shell --replace

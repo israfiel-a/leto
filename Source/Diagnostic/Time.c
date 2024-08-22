@@ -14,9 +14,9 @@
     #include <profileapi.h>
 #endif
 
-static uint32_t start_time = 0;
+static uint64_t start_time = 0;
 
-void GetTimeRaw(uint32_t* ms)
+void GetTimeRaw(uint64_t* ms)
 {
 #if defined(__LETO__LINUX__)
     struct timespec retrieved_time;
@@ -67,7 +67,7 @@ void GetTimestamp(timestamp_t* storage, timestamp_format_t format)
 {
     if (storage == NULL) return;
 
-    uint32_t millisecond_count = 0;
+    uint64_t millisecond_count = 0;
     GetTimeRaw(&millisecond_count);
     if (millisecond_count == 0)
     {
@@ -79,7 +79,7 @@ void GetTimestamp(timestamp_t* storage, timestamp_format_t format)
 
     if (millisecond_count >= 1000)
     {
-        storage->seconds = (uint8_t)(millisecond_count / 1000);
+        storage->seconds = millisecond_count / 1000;
         storage->milliseconds = millisecond_count % 1000;
     }
     if (storage->seconds >= 60)

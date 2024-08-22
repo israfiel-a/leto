@@ -60,7 +60,7 @@
  * a slight optimization. This value will reset to 0 every new minor
  * version.
  */
-#define __LETO__VERSION__TWEAK__ 9
+#define __LETO__VERSION__TWEAK__ 10
 
 /**
  * @brief This is the string represenation of Leto's base version, without

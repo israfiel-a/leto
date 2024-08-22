@@ -24,7 +24,7 @@ jobs:
             - name: Install Dependencies
               run: |
                   sudo apt update
-                  sudo apt install mutter libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
+                  sudo apt install gnome-shell mutter libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
             - name: Start Mutter
               run: mutter --wayland --headless --virtual-monitor 1920x1080
             - name: Build Project (Debug)

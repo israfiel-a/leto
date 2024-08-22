@@ -29,7 +29,7 @@ jobs:
               run: |
                   mkdir -p ~/.config/systemd/user/org.gnome.Shell@wayland.service.d
                   touch ~/.config/systemd/user/org.gnome.Shell@wayland.service.d/persistent-virtual-monitor.conf
-                  "[Service]\nExecStart=\nExecStart=/usr/bin/gnome-shell --virtual-monitor 1920x1080" > \
+                  echo "[Service]\nExecStart=\nExecStart=/usr/bin/gnome-shell --virtual-monitor 1920x1080" > \
                     ~/.config/systemd/user/org.gnome.Shell@wayland.service.d/persistent-virtual-monitor.conf
                   systemctl --user daemon-reload
             - name: Build Project (Debug)

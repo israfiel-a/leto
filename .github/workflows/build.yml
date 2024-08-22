@@ -32,7 +32,7 @@ jobs:
                   echo "[Service]\nExecStart=\nExecStart=/usr/bin/gnome-shell --virtual-monitor 1920x1080" > \
                     ~/.config/systemd/user/org.gnome.Shell@wayland.service.d/persistent-virtual-monitor.conf
                   systemctl --user daemon-reload
-                  sudo reboot
+                  gnome-shell --replace
             - name: Build Project (Debug)
               run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug && cd build_debug && make
             - name: Run Project (Debug)

@@ -32,7 +32,7 @@ typedef struct
 } timestamp_t;
 
 #define TIMESTAMP_INITIALIZER                                             \
-    (timestamp_t) { 0, 0, 0, NULL, full }
+    (timestamp_t) { NULL, full, 0, 0, 0 }
 
 void GetTimeRaw(uint64_t* ms);
 void GetTimestamp(timestamp_t* storage, timestamp_format_t format);

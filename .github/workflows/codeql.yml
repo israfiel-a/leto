@@ -33,6 +33,7 @@ jobs:
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
+        sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
         cmake -B build -DCMAKE_BUILD_TYPE=Release && cd build && make
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

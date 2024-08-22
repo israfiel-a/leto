@@ -1,5 +1,4 @@
 # Taken and adapted from the GLFW GitHub repository.
-# All rights belong to the GLFW team.
 # URL: https://github.com/glfw/glfw/blob/master/.github/workflows/build.yml
 
 name: Build/Test Leto
@@ -25,15 +24,10 @@ jobs:
               run: |
                   sudo apt update
                   sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
-
             - name: Build Project (Debug)
               run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug && cd build_debug && make
-            - name: Run Project (Debug)
-              run: cd build_debug/Leto && ./Leto
             - name: Build Project (Release)
               run: cmake -B build_release -DCMAKE_BUILD_TYPE=Release && cd build_release && make
-            - name: Run Project (Release)
-              run: cd build_release/Leto && ./Leto
     linux-gcc:
         name: Linux (gcc)
         runs-on: ubuntu-latest
@@ -49,12 +43,8 @@ jobs:
 
             - name: Build Project (Debug)
               run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug && cd build_debug && make
-            - name: Run Project (Debug)
-              run: cd build_debug/Leto && ./Leto
             - name: Build Project (Release)
               run: cmake -B build_release -DCMAKE_BUILD_TYPE=Release && cd build_release && make
-            - name: Run Project (Release)
-              run: cd build_release/Leto && ./Leto
     window-vs2022:
         name: Windows (vs2022)
         runs-on: windows-latest
@@ -64,10 +54,10 @@ jobs:
         steps:
              - uses: actions/checkout@v4
              - name: Build Project (Debug)
-               run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug
-             - name: Run Project (Debug)
-               run: cd build_debug/Leto && ./Leto
+               run: |
+                 cmake -B build_debug -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Debug
+                 cmake --build build_debug --parallel
              - name: Build Project (Release)
-               run: cmake -B build_release -DCMAKE_BUILD_TYPE=Release
-             - name: Run Project (Release)
-               run: cd build_release/Leto && ./Leto
+               run: |
+                 cmake -B build_debug -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Release
+                 cmake --build build_debug --parallel

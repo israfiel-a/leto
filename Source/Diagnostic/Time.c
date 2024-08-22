@@ -31,12 +31,13 @@ void GetTimeRaw(uint32_t* ms)
     *ms = NSEC_TO_MSEC(retrieved_time.tv_nsec) - start_time;
 #elif defined(__LETO__WINDOWS__)
     //! todo -- GetSystemTimeAsFileTime
+    *ms = 0;
 #endif
 }
 
 static void FormatTimeString(timestamp_t* storage)
 {
-    if (storage == NULL || storage->format == none) return;
+    if (storage == NULL) return;
 
     switch (storage->format)
     {

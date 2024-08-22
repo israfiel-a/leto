@@ -19,8 +19,7 @@ typedef enum
 {
     full,
     shortened,
-    bracketed,
-    none
+    bracketed
 } timestamp_format_t;
 
 typedef struct
@@ -33,7 +32,7 @@ typedef struct
 } timestamp_t;
 
 #define TIMESTAMP_INITIALIZER                                             \
-    (timestamp_t) { 0, 0, 0, NULL, none }
+    (timestamp_t) { 0, 0, 0, NULL, full }
 
 void GetTimeRaw(uint32_t* ms);
 void GetTimestamp(timestamp_t* storage, timestamp_format_t format);

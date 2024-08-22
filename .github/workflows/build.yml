@@ -24,9 +24,14 @@ jobs:
             - name: Install Dependencies
               run: |
                   sudo apt update
-                  sudo apt install libxrandr libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
+                  sudo apt install gdm libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
             - name: Create False Display
-              run: xrandr --fb 1280x1024 -display :0
+              run: |
+                  mkdir -p ~/.config/systemd/user/org.gnome.Shell@wayland.service.d
+                  touch ~/.config/systemd/user/org.gnome.Shell@wayland.service.d/persistent-virtual-monitor.conf
+                  "[Service]\nExecStart=\nExecStart=/usr/bin/gnome-shell --virtual-monitor 1920x1080" > \
+                    ~/.config/systemd/user/org.gnome.Shell@wayland.service.d/persistent-virtual-monitor.conf
+                  systemctl --user daemon-reload
             - name: Build Project (Debug)
               run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug && cd build_debug && make
             - name: Run Project (Debug)

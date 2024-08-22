@@ -29,7 +29,7 @@ set(CMAKE_C_STANDARD 11)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     add_compile_definitions(BUILD_PLATFORM=0)
-    add_compile_definitions(/Wall /WX)
+    add_compile_options(/Wall /WX)
 
     if(CMAKE_BUILD_TYPE STREQUAL "Debug") 
         set(CMAKE_EXPORT_COMPILE_COMMANDS YES)

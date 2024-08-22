@@ -15,19 +15,17 @@ ExternalProject_add("GLFW"
     TMP_DIR "${GLFW_PATH}/tmp" STAMP_DIR "${GLFW_PATH}/stp"
     DOWNLOAD_DIR "${GLFW_PATH}/src" SOURCE_DIR "${GLFW_PATH}/src"
     BINARY_DIR "${GLFW_PATH}"
-    INSTALL_COMMAND cmake -E echo "Skipping install step."
+    INSTALL_COMMAND ""
     CMAKE_ARGS -DGLFW_BUILD_DOCS=false -DGLFW_BUILD_TESTS=false 
         -DGLFW_BUILD_EXAMPLES=false -DGLFW_BUILD_X11=false)
 
 set(GLAD_PATH "${CMAKE_SOURCE_DIR}/Dependencies/GLAD")
 add_library(glad "${GLAD_PATH}/glad.c")
 
-# external
 include_directories("${GLFW_PATH}/src/include/GLFW" "${GLAD_PATH}" "${CMAKE_SOURCE_DIR}/Source")
 link_directories("${GLFW_PATH}/src/")
 
 set(CMAKE_C_STANDARD 11)
-add_compile_options(-Wall -Werror -Wpedantic)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug") 
     set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
@@ -41,8 +39,10 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     add_compile_definitions(BUILD_PLATFORM=0)
+    add_compile_definitions(/Wall /WX)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     add_compile_definitions(BUILD_PLATFORM=1)
+    add_compile_options(-Wall -Werror -Wpedantic)
 else()
     message(FATAL_ERROR "Your system is not compatible with Leto.")
 endif()
@@ -63,5 +63,4 @@ endforeach()
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 add_dependencies(${PROJECT_NAME} GLFW)
-
 target_link_libraries(${PROJECT_NAME} m glad glfw3)

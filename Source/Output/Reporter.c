@@ -34,6 +34,9 @@ static const reported_message_t errors[error_code_count] = {
                            "failed to allocate memory"},
     [time_get_error] = {{os}, "time_get_error", "failed to get time"},
     [glfw_init_failed] = {{glfw}, "glfw_init_failed", "glfw init failed"},
+    [glfw_window_create_failed] = {{glfw},
+                                   "glfw_window_create_failed",
+                                   "glfw window creation failed"},
     [opengl_init_failed] = {
         {opengl}, "opengl_init_failed", "failed to get opengl context"}};
 
@@ -46,7 +49,12 @@ static const reported_message_t warnings[warning_code_count] = {
                       "passed a null warning to the reporter"},
     [string_overconcat] = {{program_error},
                            "string_overconcat",
-                           "string implicitly concated"}};
+                           "string implicitly concated"},
+    [preemptive_window_free] = {{user_error},
+                                "preemptive_window_free",
+                                "freed window before creation"},
+    [double_window_creation] = {
+        {user_error}, "double_window_creation", "created window twice"}};
 
 void ReportError_(const char* file, const char* function, uint32_t line,
                   error_code_t code)

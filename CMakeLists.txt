@@ -72,4 +72,4 @@ endforeach()
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 add_dependencies(${PROJECT_NAME} GLFW)
-target_link_libraries(${PROJECT_NAME} m glad glfw3)
+target_link_libraries(${PROJECT_NAME} glad glfw3 m)

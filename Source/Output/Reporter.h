@@ -19,6 +19,7 @@ typedef enum
     failed_allocation,
     time_get_error,
     glfw_init_failed,
+    glfw_window_create_failed,
     opengl_init_failed,
     error_code_count
 } error_code_t;
@@ -43,6 +44,8 @@ typedef enum
     null_error,
     null_warning,
     string_overconcat,
+    preemptive_window_free,
+    double_window_creation,
     warning_code_count
 } warning_code_t;
 

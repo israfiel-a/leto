@@ -24,5 +24,6 @@ typedef struct
 } window_t;
 
 const window_t* CreateWindow(const char* title);
+void DestroyWindow(void);
 
 #endif // __LETO__WINDOW__

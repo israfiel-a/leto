@@ -22,7 +22,8 @@ ExternalProject_add("GLFW"
 set(GLAD_PATH "${CMAKE_SOURCE_DIR}/Dependencies/GLAD")
 add_library(glad "${GLAD_PATH}/glad.c")
 
-include_directories("${GLFW_PATH}/src/include/GLFW" "${GLAD_PATH}")
+# external
+include_directories("${GLFW_PATH}/src/include/GLFW" "${GLAD_PATH}" "${CMAKE_SOURCE_DIR}/Source")
 link_directories("${GLFW_PATH}/src/")
 
 set(CMAKE_C_STANDARD 11)
@@ -32,13 +33,34 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
     add_compile_options(-g -fsanitize=undefined)    
     add_link_options(-fsanitize=undefined)
-    add_compile_definitions(DEBUG BUILD_TYPE="debug")
+    add_compile_definitions(BUILD_TYPE=0)
 else()
     add_compile_options(-Ofast)
-    add_compile_definitions(BUILD_TYPE="release")
+    add_compile_definitions(BUILD_TYPE=1)
 endif()
 
-file(GLOB PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/Source/*.c)
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    add_compile_definitions(BUILD_PLATFORM=0)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    add_compile_definitions(BUILD_PLATFORM=1)
+else()
+    message(FATAL_ERROR "Your system is not compatible with Leto.")
+endif()
+
+file(GLOB PROJECT_SOURCES 
+    ${CMAKE_SOURCE_DIR}/Source/*.c
+    ${CMAKE_SOURCE_DIR}/Source/Windowing/*.c
+    ${CMAKE_SOURCE_DIR}/Source/Diagnostic/*.c
+    ${CMAKE_SOURCE_DIR}/Source/Output/*.c
+    ${CMAKE_SOURCE_DIR}/Source/Utilities/*.c
+)
+
+foreach(file ${PROJECT_SOURCES})
+    cmake_path(GET file FILENAME CURRENT_FILENAME)
+    set_source_files_properties(${file} PROPERTIES COMPILE_DEFINITIONS 
+        FILENAME="${CURRENT_FILENAME}")
+endforeach()
+
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 add_dependencies(${PROJECT_NAME} GLFW)
 

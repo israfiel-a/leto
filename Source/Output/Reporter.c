@@ -55,10 +55,11 @@ void ReportError_(const char* file, const char* function, uint32_t line,
     const reported_message_t reported_error = errors[code];
 
     int extra_info = 0;
+    const char* extra_info_desc = NULL;
     switch (reported_error.type.error)
     {
         case os:     extra_info = errno; break;
-        case glfw:   extra_info = glfwGetError(NULL); break;
+        case glfw:   extra_info = glfwGetError(&extra_info_desc); break;
         case opengl: extra_info = glGetError(); break;
         default:     break;
     }
@@ -67,9 +68,10 @@ void ReportError_(const char* file, const char* function, uint32_t line,
            "%s(), ln. %d\n\033[1m-- Info: \n--   Kind:\033[0;31m "
            "0x%x\n\033[1m--   Code:\033[0;31m %d :: %s\n\033[1m--   "
            "Description:\033[0;31m %s\n--    Extra:\033[0;31m "
-           "%d\033[1m\n--\033[0m\n",
+           "%d :: %s\033[1m\n--\033[0m\n",
            file, function, line, reported_error.type.error, code,
-           reported_error.name, reported_error.description, extra_info);
+           reported_error.name, reported_error.description, extra_info,
+           extra_info_desc);
 
     exit(EXIT_FAILURE);
 }

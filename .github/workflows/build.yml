@@ -28,11 +28,11 @@ jobs:
                   sudo apt install libwayland-dev
 
             - name: Build Project (Debug)
-              run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug
+              run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug && cd build_debug && make
             - name: Run Project (Debug)
               run: cd build_debug/Leto && ./Leto
             - name: Build Project (Release)
-              run: cmake -B build_release -DCMAKE_BUILD_TYPE=Release
+              run: cmake -B build_release -DCMAKE_BUILD_TYPE=Release && cd build_release && make
             - name: Run Project (Release)
               run: cd build_release/Leto && ./Leto
     linux-gcc:
@@ -50,11 +50,11 @@ jobs:
                   sudo apt install libwayland-dev
 
             - name: Build Project (Debug)
-              run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug
+              run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug && cd build_debug && make
             - name: Run Project (Debug)
               run: cd build_debug/Leto && ./Leto
             - name: Build Project (Release)
-              run: cmake -B build_release -DCMAKE_BUILD_TYPE=Release
+              run: cmake -B build_release -DCMAKE_BUILD_TYPE=Release && cd build_release && make
             - name: Run Project (Release)
               run: cd build_release/Leto && ./Leto
     window-vs2022:

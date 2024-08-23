@@ -25,6 +25,9 @@ static void CreateWindowContext(void)
 
 #ifdef __LETO__WAYLAND__
     glfwWindowHintString(GLFW_WAYLAND_APP_ID, application_window.title);
+#elif __LETO__X11__
+    glfwWindowHintString(GLFW_X11_CLASS_NAME, application_window.title);
+    glfwWindowHintString(GLFW_X11_INSTANCE_NAME, application_window.title);
 #endif
 
     application_window._w = glfwCreateWindow(

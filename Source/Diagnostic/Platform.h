@@ -52,7 +52,7 @@
  * change that will affect a normal user, such as UI changes. This
  * value resets to 0 every new major version.
  */
-#define __LETO__VERSION__MINOR__ 1
+#define __LETO__VERSION__MINOR__ 2
 
 /**
  * @brief This is the tweak version of Leto. This changes with every
@@ -60,7 +60,7 @@
  * a slight optimization. This value will reset to 0 every new minor
  * version.
  */
-#define __LETO__VERSION__TWEAK__ 14
+#define __LETO__VERSION__TWEAK__ 0
 
 /**
  * @brief This is the string represenation of Leto's base version, without

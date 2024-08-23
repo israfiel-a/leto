@@ -1,12 +1,15 @@
 cmake_minimum_required(VERSION 3.30.2 FATAL_ERROR)
 project("GLFW" VERSION 3.5.0 LANGUAGES C)
 
-add_compile_options(-Wno-pedantic)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    add_compile_options(-Ofast -Wno-pedantic)
+else()
+    add_compile_options(/O2)
+endif()
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-message(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-message(${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 

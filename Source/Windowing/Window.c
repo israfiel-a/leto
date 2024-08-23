@@ -28,10 +28,6 @@ static void CreateWindowContext(void)
     if (application_window._w == NULL)
         ReportError(glfw_window_create_failed);
     glfwMakeContextCurrent(application_window._w);
-
-    glfwDestroyWindow(application_window._w);
-    glfwTerminate();
-    exit(EXIT_SUCCESS);
 }
 
 const window_t* CreateWindow(const char* title)

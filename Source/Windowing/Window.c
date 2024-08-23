@@ -23,6 +23,10 @@ static void CreateWindowContext(void)
     if (application_window._m == NULL)
         ReportError(glfw_monitor_get_failed);
 
+#ifdef __LETO__WAYLAND__
+    glfwWindowHintString(GLFW_WAYLAND_APP_ID, application_window.title);
+#endif
+
     application_window._w = glfwCreateWindow(
         1, 1, application_window.title, primary_monitor, NULL);
     if (application_window._w == NULL)
@@ -49,9 +53,12 @@ const window_t* CreateWindow(const char* title)
     CreateWindowContext();
     if (!gladLoadGL(glfwGetProcAddress)) ReportError(opengl_init_failed);
 
+    glViewport(0, 0, application_window._m->width,
+               application_window._m->height);
     while (!glfwWindowShouldClose(application_window._w))
     {
         glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 
         glfwSwapBuffers(application_window._w);
         glfwPollEvents();

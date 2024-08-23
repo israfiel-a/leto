@@ -12,6 +12,7 @@
 #ifndef __LETO__WINDOW__
 #define __LETO__WINDOW__
 
+//
 #include <Diagnostic/Platform.h>
 #include <gl.h>
 #include <glfw3.h>

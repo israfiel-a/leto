@@ -20,6 +20,7 @@ typedef enum
     time_get_error,
     glfw_init_failed,
     glfw_window_create_failed,
+    glfw_monitor_get_failed,
     opengl_init_failed,
     error_code_count
 } error_code_t;

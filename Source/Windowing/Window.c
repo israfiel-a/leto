@@ -1,9 +1,38 @@
 #include "Window.h"
-#include "Output/Reporter.h"
+#include <Output/Reporter.h>
+#include <Utilities/Strings.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 
-window_t application_window = {"", NULL};
+static window_t application_window = {"", NULL, NULL};
+
+static void SetGLFWContextFlags(uint8_t version_major,
+                                uint8_t version_minor, uint32_t type)
+{
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, (int)version_major);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, (int)version_minor);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, (int)type);
+}
+
+static void CreateWindowContext(void)
+{
+    GLFWmonitor* primary_monitor = glfwGetPrimaryMonitor();
+    if (primary_monitor == NULL) ReportError(glfw_monitor_get_failed);
+    application_window._m = glfwGetVideoMode(primary_monitor);
+    if (application_window._m == NULL)
+        ReportError(glfw_monitor_get_failed);
+
+    application_window._w = glfwCreateWindow(
+        1, 1, application_window.title, primary_monitor, NULL);
+    if (application_window._w == NULL)
+        ReportError(glfw_window_create_failed);
+    glfwMakeContextCurrent(application_window._w);
+
+    glfwDestroyWindow(application_window._w);
+    glfwTerminate();
+    exit(EXIT_SUCCESS);
+}
 
 const window_t* CreateWindow(const char* title)
 {
@@ -15,22 +44,13 @@ const window_t* CreateWindow(const char* title)
 
     bool init_success = glfwInit();
     if (!init_success) ReportError(glfw_init_failed);
+    SetGLFWContextFlags(4, 6, GLFW_OPENGL_CORE_PROFILE);
 
-    // OpenGL Core v4.6
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    application_window.title = StringMalloc(127);
+    FormattedSetString(true, &application_window.title, 128,
+                       "%s | v"__LETO__VERSION__STRING__, title);
 
-    strncat(application_window.title, title, 64);
-    strncat(application_window.title, " | v" __LETO__VERSION__STRING__,
-            64);
-
-    application_window._w =
-        glfwCreateWindow(640, 480, application_window.title, NULL, NULL);
-    if (application_window._w == NULL)
-        ReportError(glfw_window_create_failed);
-
-    glfwMakeContextCurrent(application_window._w);
+    CreateWindowContext();
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         ReportError(opengl_init_failed);
 
@@ -53,7 +73,7 @@ void DestroyWindow(void)
         return;
     }
 
-    glfwMakeContextCurrent(NULL);
+    free(application_window.title);
     glfwDestroyWindow(application_window._w);
     glfwTerminate();
 }

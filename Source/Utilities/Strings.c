@@ -27,5 +27,6 @@ void FormattedSetString(bool warn_overcat, char** buffer,
     *buffer = StringMalloc(strlen(temp_buffer));
     strcpy(*buffer, temp_buffer);
 
+    free(temp_buffer);
     va_end(args);
 }

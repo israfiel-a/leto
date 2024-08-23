@@ -19,8 +19,9 @@
 
 typedef struct
 {
-    char title[128];
+    char* title;
     GLFWwindow* _w;
+    const GLFWvidmode* _m;
 } window_t;
 
 const window_t* CreateWindow(const char* title);

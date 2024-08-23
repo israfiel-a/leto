@@ -37,6 +37,9 @@ static const reported_message_t errors[error_code_count] = {
     [glfw_window_create_failed] = {{glfw},
                                    "glfw_window_create_failed",
                                    "glfw window creation failed"},
+    [glfw_monitor_get_failed] = {{glfw},
+                                 "glfw_monitor_get_failed",
+                                 "glfw failed to grab primary monitor"},
     [opengl_init_failed] = {
         {opengl}, "opengl_init_failed", "failed to get opengl context"}};
 

@@ -3,8 +3,6 @@ project("GLFW" VERSION 3.5.0 LANGUAGES C)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     add_compile_options(-Ofast -Wno-pedantic)
-else()
-    add_compile_options(/O2)
 endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})

@@ -7,7 +7,5 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     add_compile_options(-Ofast -Wno-pedantic)
-else()
-    add_compile_options(/O2)
 endif()
 add_library(${PROJECT_NAME} egl.c gl.c)

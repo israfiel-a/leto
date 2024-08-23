@@ -13,7 +13,7 @@
 #define __LETO__WINDOW__
 
 #include <Diagnostic/Platform.h>
-#include <glad.h>
+#include <gl.h>
 #include <glfw3.h>
 #include <stdint.h>
 

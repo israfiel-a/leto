@@ -47,8 +47,7 @@ const window_t* CreateWindow(const char* title)
                        "%s | v"__LETO__VERSION__STRING__, title);
 
     CreateWindowContext();
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-        ReportError(opengl_init_failed);
+    if (!gladLoadGL(glfwGetProcAddress)) ReportError(opengl_init_failed);
 
     while (!glfwWindowShouldClose(application_window._w))
     {

@@ -1,8 +1,7 @@
 #include "Reporter.h"
 #include <Diagnostic/Time.h>
-#include <Utilities/Strings.h>
 #include <errno.h>
-#include <glad.h>
+#include <gl.h>
 #include <glfw3.h>
 #include <stdio.h>
 #include <stdlib.h>

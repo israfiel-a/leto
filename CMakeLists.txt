@@ -70,11 +70,13 @@ set(GLAD_PATH "${CMAKE_SOURCE_DIR}/Dependencies/GLAD")
 set(SOURCE_PATH "${CMAKE_SOURCE_DIR}/Source")
 
 include_directories("${GLFW_PATH}/include/GLFW" "${GLAD_PATH}" "${SOURCE_PATH}")
-link_directories("${CMAKE_CURRENT_BINARY_DIRECTORY}")
+link_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 set(LIBRARY_LIST glad glfw3 m)
 message(STATUS "Dependency Info:\n  GLFW: ${GLFW_PATH}\n  GLAD: "
-    "${GLAD_PATH}\n  Leto: ${SOURCE_PATH}\n  Linked Libraries: ${LIBRARY_LIST}")
+    "${GLAD_PATH}\n  Leto: ${SOURCE_PATH}\n  Link Directory: "
+    "${CMAKE_CURRENT_BINARY_DIR}\n  Linked Libraries: "
+    "${LIBRARY_LIST}")
 
 set(GLFW_BUILD_DOCS false)
 set(GLFW_BUILD_TESTS false)

@@ -68,7 +68,10 @@ endif()
 set(GLFW_PATH "${CMAKE_SOURCE_DIR}/Dependencies/GLFW")
 set(GLAD_PATH "${CMAKE_SOURCE_DIR}/Dependencies/GLAD")
 set(SOURCE_PATH "${CMAKE_SOURCE_DIR}/Source")
+
 include_directories("${GLFW_PATH}/include/GLFW" "${GLAD_PATH}" "${SOURCE_PATH}")
+link_directories("${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+
 set(LIBRARY_LIST glad glfw3 m)
 message(STATUS "Dependency Info:\n  GLFW: ${GLFW_PATH}\n  GLAD: "
     "${GLAD_PATH}\n  Leto: ${SOURCE_PATH}\n  Linked Libraries: ${LIBRARY_LIST}")

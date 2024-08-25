@@ -51,6 +51,7 @@ const window_t* CreateWindow(const char* title)
         ReportError(glfw_window_create_failed);
 
     // Make our window's OpenGL context current on this thread.
+    //! todo: move this to rendering thread
     glfwMakeContextCurrent(application_window._w);
     if (!gladLoadGL(glfwGetProcAddress)) ReportError(opengl_init_failed);
 

@@ -11,6 +11,12 @@ char* StringMalloc(size_t string_length)
     return allocated;
 }
 
+void StringFree(char** string)
+{
+    free(*string);
+    *string = NULL;
+}
+
 void FormattedSetString(bool warn_overcat, char** buffer,
                         size_t max_string_length, const char* format, ...)
 {

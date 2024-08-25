@@ -15,6 +15,7 @@
 #include <string.h>
 
 char* StringMalloc(size_t string_length);
+void StringFree(char** string);
 
 void FormattedSetString(bool warn_overcat, char** buffer,
                         size_t max_buffer_length, const char* format, ...);

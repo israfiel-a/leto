@@ -82,3 +82,13 @@ window_close_state_t GetApplicationRunning(void)
     if (glfwWindowShouldClose(application_window._w)) return closing;
     return running;
 }
+
+void SwapApplicationBuffers(void)
+{
+    if (application_window._w == NULL)
+    {
+        ReportWarning(preemptive_buffer_swap);
+        return;
+    }
+    glfwSwapBuffers(application_window._w);
+}

@@ -199,4 +199,6 @@ const window_t* GetApplicationWindow(void);
  */
 window_close_state_t GetApplicationRunning(void);
 
+void SwapApplicationBuffers(void);
+
 #endif // __LETO__WINDOW__

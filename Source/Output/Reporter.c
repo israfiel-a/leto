@@ -55,8 +55,12 @@ static const reported_message_t warnings[warning_code_count] = {
     [preemptive_window_free] = {{user_error},
                                 "preemptive_window_free",
                                 "freed window before creation"},
-    [double_window_creation] = {
-        {user_error}, "double_window_creation", "created window twice"}};
+    [double_window_creation] = {{user_error},
+                                "double_window_creation",
+                                "created window twice"},
+    [preemptive_buffer_swap] = {{user_error},
+                                "preemptive_buffer_swap",
+                                "swapped buffers without window created"}};
 
 void ReportError_(const char* file, const char* function, uint32_t line,
                   error_code_t code)

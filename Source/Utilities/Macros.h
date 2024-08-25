@@ -14,10 +14,13 @@
 #define __STR_INTERNAL(x) #x
 #define __STRINGIFY(x) __STR_INTERNAL(x)
 
+#define BYTES_TO_MEGABYTES(value) (value) / 1000000
+#define KILOBYTES_TO_MEGABYTES(value) (value) / 1000
+
 /**
  * @brief A simple macro to convert nanoseconds to milliseconds. This is
  * literally just a division by 1000000.
  */
-#define NSEC_TO_MSEC(value) (uint64_t) value / 1000000
+#define NSEC_TO_MSEC(value) ((uint64_t)(value)) / 1000000
 
 #endif // __LETO__MACROS__

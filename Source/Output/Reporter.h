@@ -47,6 +47,7 @@ typedef enum
     string_overconcat,
     preemptive_window_free,
     double_window_creation,
+    preemptive_buffer_swap,
     warning_code_count
 } warning_code_t;
 

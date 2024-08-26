@@ -1,5 +1,5 @@
-#include <Output/Renderer.h>
-#include <Windowing/Window.h>
+#include <Rendering/Renderer.h>
+#include <Rendering/Window.h>
 
 int main(int argc, char** argv)
 {

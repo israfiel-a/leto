@@ -91,7 +91,7 @@ add_subdirectory("${GLAD_PATH}")
 
 message(STATUS "Leto source files:")
 file(GLOB PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/Source/*.c
-    ${CMAKE_SOURCE_DIR}/Source/Windowing/*.c ${CMAKE_SOURCE_DIR}/Source/Diagnostic/*.c
+    ${CMAKE_SOURCE_DIR}/Source/Rendering/*.c ${CMAKE_SOURCE_DIR}/Source/Diagnostic/*.c
     ${CMAKE_SOURCE_DIR}/Source/Output/*.c ${CMAKE_SOURCE_DIR}/Source/Utilities/*.c
 )
 foreach(file ${PROJECT_SOURCES})

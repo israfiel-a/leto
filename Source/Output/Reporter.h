@@ -48,6 +48,7 @@ typedef enum
     preemptive_window_free,
     double_window_creation,
     preemptive_buffer_swap,
+    preemptive_window_info,
     warning_code_count
 } warning_code_t;
 

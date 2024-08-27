@@ -32,6 +32,13 @@ static const reported_message_t errors[error_code_count] = {
                            "failed_allocation",
                            "failed to allocate memory"},
     [time_get_error] = {{os}, "time_get_error", "failed to get time"},
+    [file_open_failed] = {{os}, "file_open_failed", "failed to open file"},
+    [file_positioner_set_failed] = {{os},
+                                    "file_positioner_set_failed",
+                                    "failed to set file position marker"},
+    [file_positioner_get_failed] = {{os},
+                                    "file_positioner_get_failed",
+                                    "failed to get file position marker"},
     [glfw_init_failed] = {{glfw}, "glfw_init_failed", "glfw init failed"},
     [glfw_window_create_failed] = {{glfw},
                                    "glfw_window_create_failed",
@@ -39,8 +46,13 @@ static const reported_message_t errors[error_code_count] = {
     [glfw_monitor_get_failed] = {{glfw},
                                  "glfw_monitor_get_failed",
                                  "glfw failed to grab primary monitor"},
-    [opengl_init_failed] = {
-        {opengl}, "opengl_init_failed", "failed to get opengl context"}};
+    [opengl_init_failed] = {{opengl},
+                            "opengl_init_failed",
+                            "failed to get opengl context"},
+    [opengl_shader_compilation_failed] = {
+        {opengl},
+        "opengl_shader_compilation_failed",
+        "failed to compile shader (see prior printout for info)"}};
 
 static const reported_message_t warnings[warning_code_count] = {
     [null_error] = {{user_error},

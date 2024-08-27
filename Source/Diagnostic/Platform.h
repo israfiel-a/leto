@@ -6,6 +6,13 @@
  * @date 2024-08-22
  *
  * @copyright (c) 2024 - Israfiel
+ * This document is under the GNU Affero General Public License v3.0. It
+ * can be modified and distributed (commercially or otherwise) freely, and
+ * can be used privately and within patents. No liability or warranty is
+ * guaranteed. However, on use, the user must state license and copyright,
+ * any changes made, and disclose the source of the document. For more
+ * information see the @file LICENSE.md file included with this
+ * distribution of the Leto source code.
  */
 
 #ifndef __LETO__PLATFORM__
@@ -13,7 +20,7 @@
 
 // Utility macros.
 #include <Utilities/Macros.h>
-// Standard, fixed-width integer types.
+// Fixed-width integer types as described by the C11 standard.
 #include <stdint.h>
 
 // Figure out the architecture of the host machine. Leto will only run on
@@ -86,7 +93,7 @@
  * workings, like a slight optimization. This value will reset to 0
  * every new minor version.
  */
-#define __LETO__VERSION__TWEAK__ 20
+#define __LETO__VERSION__TWEAK__ 21
 
 /**
  * @brief This is the string represenation of Leto's base version,

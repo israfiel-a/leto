@@ -19,5 +19,6 @@ void StringFree(char** string);
 
 void FormattedSetString(bool warn_overcat, char** buffer,
                         size_t max_buffer_length, const char* format, ...);
+char* StringCreate(size_t max_buffer_size, const char* format, ...);
 
 #endif // __LETO__STRINGS__

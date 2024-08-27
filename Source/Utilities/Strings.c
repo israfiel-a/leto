@@ -36,3 +36,18 @@ void FormattedSetString(bool warn_overcat, char** buffer,
     free(temp_buffer);
     va_end(args);
 }
+
+char* StringCreate(size_t max_buffer_size, const char* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+
+    char* buffer = StringMalloc(max_buffer_size);
+    if (vsnprintf(buffer, max_buffer_size, format, args) > max_buffer_size)
+        ReportWarning(string_overconcat);
+    va_end(args);
+
+    buffer = realloc(buffer, strlen(buffer) + 1);
+    if (buffer == NULL) ReportError(failed_allocation);
+    return buffer;
+}

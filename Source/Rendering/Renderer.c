@@ -1,7 +1,25 @@
 #include "Renderer.h"
+#include "Shaders.h"
 #include "Window.h"
 #include <gl.h>
 #include <glfw3.h>
+
+typedef struct
+{
+    shader_list_t shader_list;
+} renderer_t;
+
+static renderer_t application_renderer = {SHADER_LIST_INITIALIZER};
+
+void CreateRenderer(void)
+{
+    application_renderer.shader_list = CreateShaderList("basic");
+}
+
+void DestroyRenderer(void)
+{
+    DestroyShaderList(&application_renderer.shader_list);
+}
 
 void render(void)
 {

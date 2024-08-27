@@ -12,6 +12,11 @@
 #ifndef __LETO__RENDERER__
 #define __LETO__RENDERER__
 
+#include <stdbool.h>
+
+void CreateRenderer(void);
+void DestroyRenderer(void);
+
 //! temp
 void render(void);
 

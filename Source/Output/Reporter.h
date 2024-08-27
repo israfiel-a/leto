@@ -18,10 +18,14 @@ typedef enum
 {
     failed_allocation,
     time_get_error,
+    file_open_failed,
+    file_positioner_set_failed,
+    file_positioner_get_failed,
     glfw_init_failed,
     glfw_window_create_failed,
     glfw_monitor_get_failed,
     opengl_init_failed,
+    opengl_shader_compilation_failed,
     error_code_count
 } error_code_t;
 

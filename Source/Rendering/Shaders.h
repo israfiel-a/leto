@@ -246,4 +246,34 @@ void DestroyShaderList(shader_list_t* list);
  */
 void AddShaderToList(shader_list_t* list, const char* name);
 
+/**
+ * DESCRIPTION
+ *
+ * @brief Grab the first shader whose name matches the one provided.
+ *
+ * PARAMETERS
+ *
+ * @param list The list to search through.
+ * @param name The name to search nodes for.
+ *
+ * RETURN VALUE
+ *
+ * @return The shader found, or NULL if none could be found or something
+ * else went wrong.
+ *
+ * WARNINGS
+ *
+ * Two warnings can be thrown by this function.
+ * @warning null_object -- If the list passed to the function is NULL, this
+ * warning will be thrown and NULL is returned.
+ * @warning null_string -- If the name passed to this function is NULL,
+ * this warning will be thrown and NULL is returned.
+ *
+ * ERRORS
+ *
+ * Nothing to note.
+ *
+ */
+shader_node_t* GetShaderNode(shader_list_t* list, const char* name);
+
 #endif // __LETO__SHADERS___

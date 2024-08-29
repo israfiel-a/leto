@@ -220,3 +220,31 @@ void AddShaderToList(shader_list_t* list, const char* name)
     list->tail->next = LoadShader(name);
     list->tail = list->tail->next;
 }
+
+shader_node_t* GetShaderNode(shader_list_t* list, const char* name)
+{
+    if (list == NULL)
+    {
+        ReportWarning(null_object);
+        return NULL;
+    }
+
+    if (name == NULL)
+    {
+        ReportWarning(null_string);
+        return list->head;
+    }
+
+    if (strcmp(list->head->name, name) == 0) return list->head;
+    if (strcmp(list->tail->name, name) == 0) return list->tail;
+
+    shader_node_t* current_node = list->head->next;
+    for (size_t i = 0; i < list->length; i++)
+    {
+        if (current_node == NULL) return NULL;
+        if (strcmp(current_node->name, name) == 0) return current_node;
+        current_node = current_node->next;
+    }
+
+    return NULL;
+}

@@ -33,12 +33,16 @@ static const reported_message_t errors[error_code_count] = {
                            "failed to allocate memory"},
     [time_get_error] = {{os}, "time_get_error", "failed to get time"},
     [file_open_failed] = {{os}, "file_open_failed", "failed to open file"},
+    [file_close_failed] = {{os},
+                           "file_close_failed",
+                           "failed to close file"},
     [file_positioner_set_failed] = {{os},
                                     "file_positioner_set_failed",
                                     "failed to set file position marker"},
     [file_positioner_get_failed] = {{os},
                                     "file_positioner_get_failed",
                                     "failed to get file position marker"},
+    [file_read_failed] = {{os}, "file_read_failed", "failed to read file"},
     [glfw_init_failed] = {{glfw}, "glfw_init_failed", "glfw init failed"},
     [glfw_window_create_failed] = {{glfw},
                                    "glfw_window_create_failed",
@@ -61,6 +65,10 @@ static const reported_message_t warnings[warning_code_count] = {
     [null_warning] = {{user_error},
                       "null_warning",
                       "passed a null warning to the reporter"},
+    [null_object] = {{user_error}, "passed a null object to a function"},
+    [null_string] = {{user_error},
+                     "null_string",
+                     "passed a null string to a function"},
     [string_overconcat] = {{program_error},
                            "string_overconcat",
                            "string implicitly concated"},
@@ -73,10 +81,14 @@ static const reported_message_t warnings[warning_code_count] = {
     [preemptive_buffer_swap] = {{user_error},
                                 "preemptive_buffer_swap",
                                 "swapped buffers without window created"},
-    [preemptive_window_info] = {
+    [preemptive_window_info] =
+        {{user_error},
+         "preemptive_window_info",
+         "tried to get window info without creating window"},
+    [preemptive_file_close] = {
         {user_error},
-        "preemptive_window_info",
-        "tried to get window info without creating window"}};
+        "preemptive_file_close",
+        "tried to close a file before it was opened"}};
 
 void ReportError_(const char* file, const char* function, uint32_t line,
                   error_code_t code)

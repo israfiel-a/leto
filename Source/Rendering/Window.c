@@ -6,7 +6,7 @@
  * information.
  * @date 2024-08-25
  *
- * @copyright (c) 2024 - Israfiel
+ * @copyright (c) 2024 - the Leto Team
  * This document is under the GNU Affero General Public License v3.0. It
  * can be modified and distributed (commercially or otherwise) freely, and
  * can be used privately and within patents. No liability or warranty is
@@ -75,8 +75,8 @@ void CreateWindow(const char* title)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     application_window.title = StringMalloc(127); // 127c + NUL
-    FormattedSetString(true, &application_window.title, 128,
-                       "%s | v"__LETO__VERSION__STRING__, title);
+    SetStringF(true, &application_window.title, 128,
+               "%s | v"__LETO__VERSION__STRING__, title);
 
     GLFWmonitor* primary_monitor = glfwGetPrimaryMonitor();
     if (primary_monitor == NULL) ReportError(glfw_monitor_get_failed);

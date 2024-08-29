@@ -6,7 +6,7 @@
  * documented with their parent object.
  * @date 2024-08-22
  *
- * @copyright (c) 2024 - Israfiel
+ * @copyright (c) 2024 - the Leto Team
  * This document is under the GNU Affero General Public License v3.0. It
  * can be modified and distributed (commercially or otherwise) freely, and
  * can be used privately and within patents. No liability or warranty is

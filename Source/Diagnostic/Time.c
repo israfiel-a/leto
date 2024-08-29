@@ -43,22 +43,22 @@ static void FormatTimeString(timestamp_t* storage)
     switch (storage->format)
     {
         case full:
-            FormattedSetString(
+            SetStringF(
                 false, &storage->string, TIMESTAMP_STRING_MAX_LENGTH,
                 "%d milliseconds, %d seconds, %d minutes",
                 storage->milliseconds, storage->seconds, storage->minutes);
             break;
         case shortened:
-            FormattedSetString(false, &storage->string,
-                               TIMESTAMP_STRING_MAX_LENGTH,
-                               "%dms, %ds, %dm", storage->milliseconds,
-                               storage->seconds, storage->minutes);
+            SetStringF(false, &storage->string,
+                       TIMESTAMP_STRING_MAX_LENGTH, "%dms, %ds, %dm",
+                       storage->milliseconds, storage->seconds,
+                       storage->minutes);
             break;
         case bracketed:
-            FormattedSetString(false, &storage->string,
-                               TIMESTAMP_STRING_MAX_LENGTH, "[%d:%d:%d]",
-                               storage->milliseconds, storage->seconds,
-                               storage->minutes);
+            SetStringF(false, &storage->string,
+                       TIMESTAMP_STRING_MAX_LENGTH, "[%d:%d:%d]",
+                       storage->milliseconds, storage->seconds,
+                       storage->minutes);
             break;
         default: break;
     }

@@ -5,7 +5,7 @@
  * string.
  * @date 2024-08-22
  *
- * @copyright (c) 2024 - Israfiel
+ * @copyright (c) 2024 - the Leto Team
  */
 
 #ifndef __LETO__TIME__

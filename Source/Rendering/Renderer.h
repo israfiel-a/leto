@@ -6,7 +6,7 @@
  * more.
  * @date 2024-08-25
  *
- * @copyright (c) 2024 - Israfiel
+ * @copyright (c) 2024 - the Leto Team
  */
 
 #ifndef __LETO__RENDERER__

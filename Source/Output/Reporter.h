@@ -6,7 +6,7 @@
  * notification software.
  * @date 2024-08-22
  *
- * @copyright (c) 2024 - Israfiel
+ * @copyright (c) 2024 - the Leto Team
  */
 
 #ifndef __LETO__REPORTER__
@@ -19,8 +19,10 @@ typedef enum
     failed_allocation,
     time_get_error,
     file_open_failed,
+    file_close_failed,
     file_positioner_set_failed,
     file_positioner_get_failed,
+    file_read_failed,
     glfw_init_failed,
     glfw_window_create_failed,
     glfw_monitor_get_failed,
@@ -48,11 +50,14 @@ typedef enum
 {
     null_error,
     null_warning,
+    null_object,
+    null_string,
     string_overconcat,
     preemptive_window_free,
     double_window_creation,
     preemptive_buffer_swap,
     preemptive_window_info,
+    preemptive_file_close,
     warning_code_count
 } warning_code_t;
 

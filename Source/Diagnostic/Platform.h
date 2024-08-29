@@ -5,7 +5,7 @@
  * etc. of the current Leto binaries.
  * @date 2024-08-22
  *
- * @copyright (c) 2024 - Israfiel
+ * @copyright (c) 2024 - the Leto Team
  * This document is under the GNU Affero General Public License v3.0. It
  * can be modified and distributed (commercially or otherwise) freely, and
  * can be used privately and within patents. No liability or warranty is
@@ -85,7 +85,7 @@
  * every change that will affect a normal user, such as major UI changes.
  * This value resets to 0 every new major version.
  */
-#define __LETO__VERSION__MINOR__ 2
+#define __LETO__VERSION__MINOR__ 3
 
 /**
  * @brief This is the tweak version of Leto. This changes with
@@ -93,7 +93,7 @@
  * workings, like a slight optimization. This value will reset to 0
  * every new minor version.
  */
-#define __LETO__VERSION__TWEAK__ 21
+#define __LETO__VERSION__TWEAK__ 0
 
 /**
  * @brief This is the string represenation of Leto's base version,

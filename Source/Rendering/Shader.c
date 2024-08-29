@@ -166,10 +166,6 @@ void UnloadShader(shader_node_t* node)
 
     glDeleteProgram(node->id);
     free(node);
-
-    node->id = 0;
-    node->name = NULL;
-    node->next = NULL;
 }
 
 shader_list_t CreateShaderList(const char* initial)

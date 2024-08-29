@@ -92,7 +92,7 @@ char* GetFileContents(FILE* file)
     return contents;
 }
 
-char* PathGetFileContents(const char* path)
+char* GetFileContentsP(const char* path)
 {
     if (path == NULL)
     {
@@ -107,7 +107,7 @@ char* PathGetFileContents(const char* path)
     return contents;
 }
 
-char* PathGetFileContentsF(const char* path_format, ...)
+char* GetFileContentsPF(const char* path_format, ...)
 {
     if (path_format == NULL)
     {

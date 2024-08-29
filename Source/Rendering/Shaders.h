@@ -263,11 +263,13 @@ void AddShaderToList(shader_list_t* list, const char* name);
  *
  * WARNINGS
  *
- * Two warnings can be thrown by this function.
+ * Three warnings can be thrown by this function.
  * @warning null_object -- If the list passed to the function is NULL, this
  * warning will be thrown and NULL is returned.
  * @warning null_string -- If the name passed to this function is NULL,
- * this warning will be thrown and NULL is returned.
+ * this warning will be thrown and the list head is returned.
+ * @warning no_such_shader -- If no shader was found with the name @param
+ * name, this warning is thrown and NULL is returned.
  *
  * ERRORS
  *
@@ -275,5 +277,65 @@ void AddShaderToList(shader_list_t* list, const char* name);
  *
  */
 shader_node_t* GetShaderNode(shader_list_t* list, const char* name);
+
+/**
+ * DESCRIPTION
+ *
+ * @brief Use an OpenGL shader via its containing shader node.
+ *
+ * PARAMETERS
+ *
+ * @param shader The shader to use.
+ *
+ * RETURN VALUE
+ *
+ * Nothing to note.
+ *
+ * WARNINGS
+ *
+ * One warning can be thrown by this function.
+ * @warning null_object -- If the shader passed to this function is NULL,
+ * then this warning is thrown and nothing happens.
+ *
+ * ERRORS
+ *
+ * One error can be thrown by this function.
+ * @exception opengl_malformed_shader - If the shader inside the node is
+ * not valid, this error is thrown and the process exits.
+ *
+ */
+void UseShader(shader_node_t* shader);
+
+/**
+ * DESCRIPTION
+ *
+ * @brief Use an OpenGL shader via looking it up from a list.
+ *
+ * PARAMETERS
+ *
+ * @param list The list to look through.
+ *
+ * RETURN VALUE
+ *
+ * Nothing to note.
+ *
+ * WARNINGS
+ *
+ * Three warnings can be thrown by this function.
+ * @warning null_object -- If the list passed to this function is NULL,
+ * then this warning is thrown and nothing happens.
+ * @warning null_string -- If the string name of the shader passed to this
+ * function is NULL, then this warning is thrown nothing happens.
+ * @warning no_such_shader -- If the shader we're asking for does not
+ * exist, this warning is thrown and nothing happens.
+ *
+ * ERRORS
+ *
+ * One error can be thrown by this function.
+ * @exception opengl_malformed_shader - If the shader inside the node is
+ * not valid, this error is thrown and the process exits.
+ *
+ */
+void UseShaderN(shader_list_t* list, const char* name);
 
 #endif // __LETO__SHADERS___

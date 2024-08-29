@@ -53,10 +53,13 @@ static const reported_message_t errors[error_code_count] = {
     [opengl_init_failed] = {{opengl},
                             "opengl_init_failed",
                             "failed to get opengl context"},
-    [opengl_shader_compilation_failed] = {
-        {opengl},
-        "opengl_shader_compilation_failed",
-        "failed to compile shader (see prior printout for info)"}};
+    [opengl_shader_compilation_failed] =
+        {{opengl},
+         "opengl_shader_compilation_failed",
+         "failed to compile shader (see prior printout for info)"},
+    [opengl_malformed_shader] = {{opengl},
+                                 "opengl_malformed_shader",
+                                 "an invalid shader object was used"}};
 
 static const reported_message_t warnings[warning_code_count] = {
     [null_error] = {{user_error},
@@ -85,10 +88,12 @@ static const reported_message_t warnings[warning_code_count] = {
         {{user_error},
          "preemptive_window_info",
          "tried to get window info without creating window"},
-    [preemptive_file_close] = {
-        {user_error},
-        "preemptive_file_close",
-        "tried to close a file before it was opened"}};
+    [preemptive_file_close] =
+        {{user_error},
+         "preemptive_file_close",
+         "tried to close a file before it was opened"},
+    [no_such_shader] = {
+        {program_error}, "no_such_shader", "no such shader found"}};
 
 void ReportError_(const char* file, const char* function, uint32_t line,
                   error_code_t code)

@@ -28,6 +28,7 @@ typedef enum
     glfw_monitor_get_failed,
     opengl_init_failed,
     opengl_shader_compilation_failed,
+    opengl_malformed_shader,
     error_code_count
 } error_code_t;
 
@@ -58,6 +59,7 @@ typedef enum
     preemptive_buffer_swap,
     preemptive_window_info,
     preemptive_file_close,
+    no_such_shader,
     warning_code_count
 } warning_code_t;
 

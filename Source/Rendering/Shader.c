@@ -241,10 +241,44 @@ shader_node_t* GetShaderNode(shader_list_t* list, const char* name)
     shader_node_t* current_node = list->head->next;
     for (size_t i = 0; i < list->length; i++)
     {
-        if (current_node == NULL) return NULL;
+        if (current_node == NULL) break;
         if (strcmp(current_node->name, name) == 0) return current_node;
         current_node = current_node->next;
     }
 
+    ReportWarning(no_such_shader);
     return NULL;
+}
+
+void UseShader(shader_node_t* shader)
+{
+    if (shader == NULL)
+    {
+        ReportWarning(null_object);
+        return;
+    }
+
+    glUseProgram(shader->id);
+    if (glGetError() != GL_NO_ERROR) ReportError(opengl_malformed_shader);
+}
+
+void UseShaderN(shader_list_t* list, const char* name)
+{
+    if (list == NULL)
+    {
+        ReportWarning(null_object);
+        return;
+    }
+
+    if (name == NULL)
+    {
+        ReportWarning(null_string);
+        return;
+    }
+
+    shader_node_t* shader = GetShaderNode(list, name);
+    if (shader == NULL) return; // The warning is already reported.
+
+    glUseProgram(shader->id);
+    if (glGetError() != GL_NO_ERROR) ReportError(opengl_malformed_shader);
 }

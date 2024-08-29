@@ -23,6 +23,8 @@ void DestroyRenderer(void)
 
 void render(void)
 {
+    UseShaderN(&application_renderer.shader_list, "basic");
+
     while (GetApplicationRunState())
     {
         glClear(GL_COLOR_BUFFER_BIT);

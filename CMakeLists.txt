@@ -93,6 +93,7 @@ message(STATUS "Leto source files:")
 file(GLOB PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/Source/*.c
     ${CMAKE_SOURCE_DIR}/Source/Rendering/*.c ${CMAKE_SOURCE_DIR}/Source/Diagnostic/*.c
     ${CMAKE_SOURCE_DIR}/Source/Output/*.c ${CMAKE_SOURCE_DIR}/Source/Utilities/*.c
+    ${CMAKE_SOURCE_DIR}/Source/Assets/*.c
 )
 foreach(file ${PROJECT_SOURCES})
     cmake_path(GET file FILENAME CURRENT_FILENAME)

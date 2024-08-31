@@ -92,8 +92,12 @@ static const reported_message_t warnings[warning_code_count] = {
         {{user_error},
          "preemptive_file_close",
          "tried to close a file before it was opened"},
-    [no_such_shader] = {
-        {program_error}, "no_such_shader", "no such shader found"}};
+    [no_such_shader] = {{program_error},
+                        "no_such_shader",
+                        "no such shader found"},
+    [shader_list_full] = {{program_error},
+                          "shader_list_full",
+                          "the opengl shader list is full to capacity"}};
 
 void ReportError_(const char* file, const char* function, uint32_t line,
                   error_code_t code)

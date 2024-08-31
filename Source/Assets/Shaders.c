@@ -117,7 +117,7 @@ static void CheckShaderLinkage(const unsigned int shader)
     }
 }
 
-shader_node_t* LoadShader(const char* name)
+shader_t* LoadShader(const char* name)
 {
     if (name == NULL)
     {
@@ -142,7 +142,7 @@ shader_node_t* LoadShader(const char* name)
 
     free(vraw), free(fraw);
 
-    shader_node_t* created_node = calloc(sizeof(shader_node_t), 1);
+    shader_t* created_node = calloc(sizeof(shader_t), 1);
     if (created_node == NULL) ReportError(failed_allocation);
     created_node->name = name;
 
@@ -156,7 +156,7 @@ shader_node_t* LoadShader(const char* name)
     return created_node;
 }
 
-void UnloadShader(shader_node_t* node)
+void UnloadShader(shader_t* node)
 {
     if (node == NULL)
     {
@@ -168,145 +168,13 @@ void UnloadShader(shader_node_t* node)
     free(node);
 }
 
-shader_list_t CreateShaderList(const char* initial)
-{
-    // We don't check for NULLs here since LoadShader does that for us, and
-    // it will simply return NULL, preventing any side effects if the
-    // function return is checked correctly.
-
-    shader_list_t created_list = SHADER_LIST_INITIALIZER;
-    created_list.length = 1;
-    created_list.head = LoadShader(initial);
-
-    return created_list;
-}
-
-void DestroyShaderList(shader_list_t* list)
-{
-    if (list == NULL)
-    {
-        ReportWarning(null_object);
-        return;
-    }
-
-    shader_node_t* current_node = list->head;
-    for (size_t i = 0; i < list->length; i++)
-    {
-        shader_node_t* temp_node = current_node->next;
-        UnloadShader(current_node);
-        current_node = temp_node;
-    }
-
-    list->length = 0;
-    list->head = NULL;
-    list->tail = NULL;
-}
-
-void AddShaderToList(shader_list_t* list, const char* name)
-{
-    if (name == NULL)
-    {
-        ReportWarning(null_string);
-        return;
-    }
-
-    if (list == NULL)
-    {
-        ReportWarning(null_object);
-        return;
-    }
-
-    list->length = list->length + 1;
-    list->tail->next = LoadShader(name);
-    list->tail = list->tail->next;
-}
-
-uint32_t GetShader(shader_list_t* list, const char* name)
-{
-    if (list == NULL)
-    {
-        ReportWarning(null_object);
-        return 0;
-    }
-
-    if (name == NULL)
-    {
-        ReportWarning(null_string);
-        return list->head->id;
-    }
-
-    if (strcmp(list->head->name, name) == 0) return list->head->id;
-    if (strcmp(list->tail->name, name) == 0) return list->tail->id;
-
-    shader_node_t* current_node = list->head->next;
-    for (size_t i = 0; i < list->length; i++)
-    {
-        if (current_node == NULL) break;
-        if (strcmp(current_node->name, name) == 0) return current_node->id;
-        current_node = current_node->next;
-    }
-
-    ReportWarning(no_such_shader);
-    return 0;
-}
-
-shader_node_t* GetShaderN(shader_list_t* list, const char* name)
-{
-    if (list == NULL)
-    {
-        ReportWarning(null_object);
-        return NULL;
-    }
-
-    if (name == NULL)
-    {
-        ReportWarning(null_string);
-        return list->head;
-    }
-
-    if (strcmp(list->head->name, name) == 0) return list->head;
-    if (strcmp(list->tail->name, name) == 0) return list->tail;
-
-    shader_node_t* current_node = list->head->next;
-    for (size_t i = 0; i < list->length; i++)
-    {
-        if (current_node == NULL) break;
-        if (strcmp(current_node->name, name) == 0) return current_node;
-        current_node = current_node->next;
-    }
-
-    ReportWarning(no_such_shader);
-    return NULL;
-}
-
-void UseShader(shader_node_t* shader)
+void UseShader(const shader_t* shader)
 {
     if (shader == NULL)
     {
         ReportWarning(null_object);
         return;
     }
-
-    glUseProgram(shader->id);
-    if (glGetError() != GL_NO_ERROR) ReportError(opengl_malformed_shader);
-}
-
-void UseShaderN(shader_list_t* list, const char* name)
-{
-    if (list == NULL)
-    {
-        ReportWarning(null_object);
-        return;
-    }
-
-    if (name == NULL)
-    {
-        ReportWarning(null_string);
-        return;
-    }
-
-    shader_node_t* shader = GetShaderN(list, name);
-    if (shader == NULL) return; // The warning is already reported.
 
     glUseProgram(shader->id);
     if (glGetError() != GL_NO_ERROR) ReportError(opengl_malformed_shader);

@@ -60,6 +60,7 @@ typedef enum
     preemptive_window_info,
     preemptive_file_close,
     no_such_shader,
+    shader_list_full,
     warning_code_count
 } warning_code_t;
 

@@ -4,7 +4,8 @@
 int main(int argc, char** argv)
 {
     CreateWindow("Leto");
-    CreateRenderer();
+    CreateRenderer(1);
+    AddShader("basic");
 
     render();
 

@@ -221,7 +221,36 @@ void AddShaderToList(shader_list_t* list, const char* name)
     list->tail = list->tail->next;
 }
 
-shader_node_t* GetShaderNode(shader_list_t* list, const char* name)
+uint32_t GetShader(shader_list_t* list, const char* name)
+{
+    if (list == NULL)
+    {
+        ReportWarning(null_object);
+        return 0;
+    }
+
+    if (name == NULL)
+    {
+        ReportWarning(null_string);
+        return list->head->id;
+    }
+
+    if (strcmp(list->head->name, name) == 0) return list->head->id;
+    if (strcmp(list->tail->name, name) == 0) return list->tail->id;
+
+    shader_node_t* current_node = list->head->next;
+    for (size_t i = 0; i < list->length; i++)
+    {
+        if (current_node == NULL) break;
+        if (strcmp(current_node->name, name) == 0) return current_node->id;
+        current_node = current_node->next;
+    }
+
+    ReportWarning(no_such_shader);
+    return 0;
+}
+
+shader_node_t* GetShaderN(shader_list_t* list, const char* name)
 {
     if (list == NULL)
     {
@@ -276,7 +305,7 @@ void UseShaderN(shader_list_t* list, const char* name)
         return;
     }
 
-    shader_node_t* shader = GetShaderNode(list, name);
+    shader_node_t* shader = GetShaderN(list, name);
     if (shader == NULL) return; // The warning is already reported.
 
     glUseProgram(shader->id);

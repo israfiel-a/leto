@@ -70,7 +70,8 @@ set(GLAD_PATH "${CMAKE_SOURCE_DIR}/Dependencies/GLAD")
 set(CGLM_PATH "${CMAKE_SOURCE_DIR}/Dependencies/CGLM")
 set(SOURCE_PATH "${CMAKE_SOURCE_DIR}/Source")
 
-include_directories("${GLFW_PATH}/include/GLFW" "${GLAD_PATH}" "${SOURCE_PATH}")
+include_directories("${GLFW_PATH}/include/GLFW" "${GLAD_PATH}" "${CGLM_PATH}" 
+    "${SOURCE_PATH}")
 link_directories("${CMAKE_BINARY_DIR}")
 
 set(LIBRARY_LIST glad glfw3 cglm m)

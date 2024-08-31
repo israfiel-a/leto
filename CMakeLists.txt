@@ -67,15 +67,16 @@ endif()
 
 set(GLFW_PATH "${CMAKE_SOURCE_DIR}/Dependencies/GLFW")
 set(GLAD_PATH "${CMAKE_SOURCE_DIR}/Dependencies/GLAD")
+set(CGLM_PATH "${CMAKE_SOURCE_DIR}/Dependencies/CGLM")
 set(SOURCE_PATH "${CMAKE_SOURCE_DIR}/Source")
 
 include_directories("${GLFW_PATH}/include/GLFW" "${GLAD_PATH}" "${SOURCE_PATH}")
 link_directories("${CMAKE_BINARY_DIR}")
 
-set(LIBRARY_LIST glad glfw3 m)
+set(LIBRARY_LIST glad glfw3 cglm m)
 message(STATUS "Dependency Info:\n  GLFW: ${GLFW_PATH}\n  GLAD: "
-    "${GLAD_PATH}\n  Leto: ${SOURCE_PATH}\n  Link Directory: "
-    "${CMAKE_BINARY_DIR}\n  Linked Libraries: "
+    "${GLAD_PATH}\n  CGLM: ${CGLM_PATH}\n  Leto: ${SOURCE_PATH}\n"
+    "  Link Directory: ${CMAKE_BINARY_DIR}\n  Linked Libraries: "
     "${LIBRARY_LIST}")
 
 set(GLFW_BUILD_DOCS false)
@@ -88,6 +89,7 @@ message(STATUS "Adding GLFW to the project. Options:\n  "
 
 add_subdirectory("${GLFW_PATH}")
 add_subdirectory("${GLAD_PATH}")
+add_subdirectory("${CGLM_PATH}")
 
 message(STATUS "Leto source files:")
 file(GLOB PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/Source/*.c
@@ -105,7 +107,7 @@ endforeach()
 message(NOTICE "")
 message(NOTICE "")
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
-add_dependencies(${PROJECT_NAME} glad glfw)
+add_dependencies(${PROJECT_NAME} glad glfw cglm)
 target_link_libraries(${PROJECT_NAME} ${LIBRARY_LIST})
 
 file(COPY ${CMAKE_SOURCE_DIR}/Assets DESTINATION 

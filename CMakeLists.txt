@@ -76,7 +76,7 @@ link_directories("${CMAKE_BINARY_DIR}")
 
 set(LIBRARY_LIST glad glfw3 cglm)
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    list(ADD m)
+    list(APPEND LIBRARY_LIST m)
 endif()
 
 message(STATUS "Dependency Info:\n  GLFW: ${GLFW_PATH}\n  GLAD: "

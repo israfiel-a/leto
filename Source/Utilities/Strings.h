@@ -13,6 +13,7 @@
 
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 char* LetoStringMalloc(size_t string_length);
 char* LetoStringCalloc(size_t string_length);

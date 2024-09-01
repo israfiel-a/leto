@@ -54,7 +54,7 @@ Beyond this, all headers must be, number one, guarded, and number two, their gua
 ```
 
 ### Functions
-All functions must be named both succinctly and descriptively. Any functions that are extensions / overloads of another should have a single letter descriptor of its change.
+All functions must be named both succinctly and descriptively. Any ambiguously named function (i.e. `CreateWindow`) must be prefixed with "Leto". This is to prevent linker errors. Any functions that are extensions / overloads of another should have a single letter descriptor of its change.
 
 ```c
 // Original function

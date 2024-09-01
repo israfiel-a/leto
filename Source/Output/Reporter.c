@@ -99,8 +99,8 @@ static const reported_message_t warnings[warning_code_count] = {
                           "shader_list_full",
                           "the opengl shader list is full to capacity"}};
 
-void ReportError_(const char* file, const char* function, uint32_t line,
-                  error_code_t code)
+void LetoReportError_(const char* file, const char* function,
+                      uint32_t line, error_code_t code)
 {
     if (code == error_code_count) { exit(EXIT_FAILURE); }
     const reported_message_t reported_error = errors[code];
@@ -112,6 +112,7 @@ void ReportError_(const char* file, const char* function, uint32_t line,
         case os:     extra_info = errno; break;
         case glfw:   extra_info = glfwGetError(&extra_info_desc); break;
         case opengl: extra_info = glGetError(); break;
+        case leto:
         default:     break;
     }
 
@@ -127,17 +128,17 @@ void ReportError_(const char* file, const char* function, uint32_t line,
     exit(EXIT_FAILURE);
 }
 
-void ReportWarning_(const char* file, const char* function, uint32_t line,
-                    warning_code_t code)
+void LetoReportWarning_(const char* file, const char* function,
+                        uint32_t line, warning_code_t code)
 {
     if (code == warning_code_count)
     {
-        ReportWarning(null_warning);
+        LetoReportWarning(null_warning);
         return;
     }
     const reported_message_t reported_warning = warnings[code];
     timestamp_t timestamp = TIMESTAMP_INITIALIZER;
-    GetTimestamp(&timestamp, shortened);
+    LetoGetTimestamp(&timestamp, shortened);
 
     printf("\033[1;33m--\n-- !! Leto Warning !!\n-- At Timestamp: "
            "\033[0;33m%s\n\033[1m-- From:\033[0;33m %s :: %s(), ln. "

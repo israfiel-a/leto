@@ -8,7 +8,7 @@
 
 static renderer_t application_renderer = {NULL, 0, 0};
 
-void CreateRenderer(size_t shader_list_size)
+void LetoCreateRenderer(size_t shader_list_size)
 {
     application_renderer.shader_list =
         malloc(sizeof(shader_t) * shader_list_size);
@@ -16,26 +16,26 @@ void CreateRenderer(size_t shader_list_size)
     application_renderer.shader_list_occupied = 0;
 }
 
-void DestroyRenderer(void) { free(application_renderer.shader_list); }
+void LetoDestroyRenderer(void) { free(application_renderer.shader_list); }
 
 void render(void)
 {
-    UseShader(GetShader("basic"));
+    LetoUseShader(LetoGetShader("basic"));
 
-    while (GetApplicationRunState())
+    while (LetoGetRunState())
     {
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        SwapApplicationBuffers();
+        LetoSwapBuffers();
         glfwPollEvents();
     }
 }
 
-shader_t* GetShader(const char* name)
+shader_t* LetoGetShader(const char* name)
 {
     if (name == NULL)
     {
-        ReportWarning(null_string);
+        LetoReportWarning(null_string);
         return application_renderer.shader_list[0];
     }
 
@@ -47,27 +47,27 @@ shader_t* GetShader(const char* name)
         current_shader = application_renderer.shader_list[i];
     }
 
-    ReportWarning(no_such_shader);
+    LetoReportWarning(no_such_shader);
     return NULL;
 }
 
-void AddShader(const char* name)
+void LetoAddShader(const char* name)
 {
     if (application_renderer.shader_list_size ==
         application_renderer.shader_list_occupied)
     {
-        ReportWarning(shader_list_full);
+        LetoReportWarning(shader_list_full);
         return;
     }
 
     if (name == NULL)
     {
-        ReportWarning(null_string);
+        LetoReportWarning(null_string);
         return;
     }
 
     application_renderer
         .shader_list[application_renderer.shader_list_occupied] =
-        LoadShader(name);
+        LetoLoadShader(name);
     application_renderer.shader_list_occupied += 1;
 }

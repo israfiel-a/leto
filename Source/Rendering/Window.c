@@ -60,35 +60,35 @@ typedef struct
  */
 static window_t application_window = {NULL, NULL, NULL};
 
-void CreateWindow(const char* title)
+void LetoCreateWindow(const char* title)
 {
     if (application_window._w != NULL)
     {
-        ReportWarning(double_window_creation);
+        LetoReportWarning(double_window_creation);
         return;
     }
 
-    if (!glfwInit()) ReportError(glfw_init_failed);
+    if (!glfwInit()) LetoReportError(glfw_init_failed);
     // OpenGL Core Profile v4.6
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    application_window.title = StringMalloc(127); // 127c + NUL
-    SetStringF(true, &application_window.title, 128,
-               "%s | v"__LETO__VERSION__STRING__, title);
+    application_window.title = LetoStringMalloc(127); // 127c + NUL
+    LetoSetStringF(true, &application_window.title, 128,
+                   "%s | v"__LETO__VERSION__STRING__, title);
 
     GLFWmonitor* primary_monitor = glfwGetPrimaryMonitor();
-    if (primary_monitor == NULL) ReportError(glfw_monitor_get_failed);
+    if (primary_monitor == NULL) LetoReportError(glfw_monitor_get_failed);
     application_window._m = glfwGetVideoMode(primary_monitor);
     if (application_window._m == NULL)
-        ReportError(glfw_monitor_get_failed);
+        LetoReportError(glfw_monitor_get_failed);
 
 // Depending on what display server we're using, either set the
 // Wayland app ID or the X11 class name.
-#ifdef __LETO__WAYLAND__
+#if defined(__LETO__WAYLAND__)
     glfwWindowHintString(GLFW_WAYLAND_APP_ID, application_window.title);
-#elif __LETO__X11__
+#elif defined(__LETO__X11__)
     glfwWindowHintString(GLFW_X11_CLASS_NAME, application_window.title);
     glfwWindowHintString(GLFW_X11_INSTANCE_NAME, application_window.title);
 #endif
@@ -97,22 +97,23 @@ void CreateWindow(const char* title)
         application_window._m->width, application_window._m->height,
         application_window.title, primary_monitor, NULL);
     if (application_window._w == NULL)
-        ReportError(glfw_window_create_failed);
+        LetoReportError(glfw_window_create_failed);
 
     // Make our window's OpenGL context current on this thread.
     glfwMakeContextCurrent(application_window._w);
-    if (!gladLoadGL(glfwGetProcAddress)) ReportError(opengl_init_failed);
+    if (!gladLoadGL(glfwGetProcAddress))
+        LetoReportError(opengl_init_failed);
 }
 
-void DestroyWindow(void)
+void LetoDestroyWindow(void)
 {
     if (application_window._w == NULL)
     {
-        ReportWarning(preemptive_window_free);
+        LetoReportWarning(preemptive_window_free);
         return;
     }
 
-    StringFree(&application_window.title);
+    LetoStringFree(&application_window.title);
     glfwDestroyWindow(application_window._w);
     application_window._m = NULL;
     application_window._w = NULL;
@@ -120,48 +121,48 @@ void DestroyWindow(void)
     glfwTerminate();
 }
 
-bool GetApplicationRunState(void)
+void LetoSwapBuffers(void)
 {
     if (application_window._w == NULL)
     {
-        ReportWarning(preemptive_window_info);
-        return false;
-    }
-    return !glfwWindowShouldClose(application_window._w);
-}
-
-void SwapApplicationBuffers(void)
-{
-    if (application_window._w == NULL)
-    {
-        ReportWarning(preemptive_buffer_swap);
+        LetoReportWarning(preemptive_buffer_swap);
         return;
     }
     glfwSwapBuffers(application_window._w);
 }
 
-const char* GetApplicationTitle(void)
+bool LetoGetRunState(void)
+{
+    if (application_window._w == NULL)
+    {
+        LetoReportWarning(preemptive_window_info);
+        return false;
+    }
+    return !glfwWindowShouldClose(application_window._w);
+}
+
+const char* LetoGetTitle(void)
 {
     if (application_window.title == NULL)
-        ReportWarning(preemptive_window_info);
+        LetoReportWarning(preemptive_window_info);
     return application_window.title;
 }
 
-uint32_t GetApplicationWidth(void)
+uint32_t LetoGetWidth(void)
 {
     if (application_window._m == NULL)
     {
-        ReportWarning(preemptive_window_info);
+        LetoReportWarning(preemptive_window_info);
         return 0;
     }
     return (uint32_t)application_window._m->width;
 }
 
-uint32_t GetApplicationHeight(void)
+uint32_t LetoGetHeight(void)
 {
     if (application_window._m == NULL)
     {
-        ReportWarning(preemptive_window_info);
+        LetoReportWarning(preemptive_window_info);
         return 0;
     }
     return (uint32_t)application_window._m->height;

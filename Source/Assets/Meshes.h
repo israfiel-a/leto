@@ -41,10 +41,10 @@ typedef struct
     vec4 specular; // first three are spec, last is spec exponent
     vec3 diffuse;
     vec3 ambient;
-    float transparency;
     vec3 transmission_filter; // only on transparent obj
-    float refraction;
     illumination_t illumination;
+    float transparency;
+    float refraction;
     const char* name;
 } material_t;
 
@@ -58,7 +58,7 @@ typedef struct
     const char* name;
 } mesh_t;
 
-mesh_t* LoadMesh(const char* name);
-void UnloadMesh(mesh_t* mesh);
+mesh_t* LetoLoadMesh(const char* name);
+void LetoUnloadMesh(mesh_t* mesh);
 
 #endif // __LETO__MESHES__

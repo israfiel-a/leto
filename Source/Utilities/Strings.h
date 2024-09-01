@@ -13,16 +13,15 @@
 
 #include <stdarg.h>
 #include <stdbool.h>
-#include <string.h>
 
-char* StringMalloc(size_t string_length);
-char* StringCalloc(size_t string_length);
-void StringFree(char** string);
+char* LetoStringMalloc(size_t string_length);
+char* LetoStringCalloc(size_t string_length);
+void LetoStringFree(char** string);
 
-void SetStringF(bool warn_overcat, char** buffer, size_t max_buffer_length,
-                const char* format, ...);
-char* StringCreate(size_t max_buffer_size, const char* format, ...);
-char* StringCreateV(size_t max_buffer_size, const char* format,
-                    va_list args);
+void LetoSetStringF(bool warn_overcat, char** buffer,
+                    size_t max_buffer_length, const char* format, ...);
+char* LetoStringCreate(size_t max_buffer_size, const char* format, ...);
+char* LetoStringCreateV(size_t max_buffer_size, const char* format,
+                        va_list args);
 
 #endif // __LETO__STRINGS__

@@ -14,14 +14,14 @@ typedef enum
     ra,
 } file_mode_t;
 
-FILE* OpenFile(file_mode_t mode, const char* path);
-FILE* OpenFileF(file_mode_t mode, const char* path_format, ...);
-void CloseFile(FILE* file);
+FILE* LetoOpenFile(file_mode_t mode, const char* path);
+FILE* LetoOpenFileF(file_mode_t mode, const char* path_format, ...);
+void LetoCloseFile(FILE* file);
 
-long GetFileSize(FILE* file);
+size_t LetoGetFileSize(FILE* file);
 
-char* GetFileContents(FILE* file);
-char* GetFileContentsP(const char* path);
-char* GetFileContentsPF(const char* path_format, ...);
+char* LetoGetFileContents(FILE* file);
+char* LetoGetFileContentsP(const char* path);
+char* LetoGetFileContentsPF(const char* path_format, ...);
 
 #endif // __LETO__FILES__

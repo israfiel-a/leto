@@ -17,12 +17,12 @@
 
 static uint64_t start_time = 0;
 
-void GetTimeRaw(uint64_t* ms)
+void LetoGetTimeRaw(uint64_t* ms)
 {
 #if defined(__LETO__LINUX__)
     struct timespec retrieved_time;
     int time_get_return = clock_gettime(CLOCK_MONOTONIC, &retrieved_time);
-    if (time_get_return == -1) ReportError(time_get_error);
+    if (time_get_return == -1) LetoReportError(time_get_error);
 
     if (start_time == 0)
     {
@@ -36,45 +36,45 @@ void GetTimeRaw(uint64_t* ms)
 #endif
 }
 
-static void FormatTimeString(timestamp_t* storage)
+static void FormatTimeString_(timestamp_t* storage)
 {
     if (storage == NULL) return;
 
     switch (storage->format)
     {
         case full:
-            SetStringF(
+            LetoSetStringF(
                 false, &storage->string, TIMESTAMP_STRING_MAX_LENGTH,
                 "%d milliseconds, %d seconds, %d minutes",
                 storage->milliseconds, storage->seconds, storage->minutes);
             break;
         case shortened:
-            SetStringF(false, &storage->string,
-                       TIMESTAMP_STRING_MAX_LENGTH, "%dms, %ds, %dm",
-                       storage->milliseconds, storage->seconds,
-                       storage->minutes);
+            LetoSetStringF(false, &storage->string,
+                           TIMESTAMP_STRING_MAX_LENGTH, "%dms, %ds, %dm",
+                           storage->milliseconds, storage->seconds,
+                           storage->minutes);
             break;
         case bracketed:
-            SetStringF(false, &storage->string,
-                       TIMESTAMP_STRING_MAX_LENGTH, "[%d:%d:%d]",
-                       storage->milliseconds, storage->seconds,
-                       storage->minutes);
+            LetoSetStringF(false, &storage->string,
+                           TIMESTAMP_STRING_MAX_LENGTH, "[%d:%d:%d]",
+                           storage->milliseconds, storage->seconds,
+                           storage->minutes);
             break;
         default: break;
     }
 }
 
-void GetTimestamp(timestamp_t* storage, timestamp_format_t format)
+void LetoGetTimestamp(timestamp_t* storage, timestamp_format_t format)
 {
     if (storage == NULL) return;
 
     uint64_t millisecond_count = 0;
-    GetTimeRaw(&millisecond_count);
+    LetoGetTimeRaw(&millisecond_count);
     if (millisecond_count == 0)
     {
         *storage = TIMESTAMP_INITIALIZER;
         storage->format = format;
-        FormatTimeString(storage);
+        FormatTimeString_(storage);
         return;
     }
 
@@ -89,5 +89,5 @@ void GetTimestamp(timestamp_t* storage, timestamp_format_t format)
         storage->seconds = storage->seconds % 60;
     }
     storage->format = format;
-    FormatTimeString(storage);
+    FormatTimeString_(storage);
 }

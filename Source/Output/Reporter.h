@@ -12,6 +12,7 @@
 #ifndef __LETO__REPORTER__
 #define __LETO__REPORTER__
 
+#include <Utilities/Attributes.h>
 #include <stdint.h>
 
 typedef enum
@@ -42,10 +43,11 @@ typedef enum
  * @return _Noreturn
  * @todo implement notification functionality
  */
-_Noreturn void ReportError_(const char* file, const char* function,
-                            uint32_t line, error_code_t code);
+__LETO__NORETURN__ LetoReportError_(const char* file, const char* function,
+                                    uint32_t line, error_code_t code);
 
-#define ReportError(code) ReportError_(FILENAME, __func__, __LINE__, code)
+#define LetoReportError(code)                                             \
+    LetoReportError_(FILENAME, __func__, __LINE__, code)
 
 typedef enum
 {
@@ -64,10 +66,10 @@ typedef enum
     warning_code_count
 } warning_code_t;
 
-void ReportWarning_(const char* file, const char* function, uint32_t line,
-                    warning_code_t code);
+void LetoReportWarning_(const char* file, const char* function,
+                        uint32_t line, warning_code_t code);
 
-#define ReportWarning(code)                                               \
-    ReportWarning_(FILENAME, __func__, __LINE__, code)
+#define LetoReportWarning(code)                                           \
+    LetoReportWarning_(FILENAME, __func__, __LINE__, code)
 
 #endif // __LETO__REPORTER__

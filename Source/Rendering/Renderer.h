@@ -24,8 +24,8 @@ typedef struct
     size_t shader_list_occupied;
 } renderer_t;
 
-void CreateRenderer(size_t shader_list_size);
-void DestroyRenderer(void);
+void LetoCreateRenderer(size_t shader_list_size);
+void LetoDestroyRenderer(void);
 
 /**
  * DESCRIPTION
@@ -58,9 +58,9 @@ void DestroyRenderer(void);
  * Nothing to note.
  *
  */
-shader_t* GetShader(const char* name);
+shader_t* LetoGetShader(const char* name);
 
-void AddShader(const char* name);
+void LetoAddShader(const char* name);
 
 //! temp
 void render(void);

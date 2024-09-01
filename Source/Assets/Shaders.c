@@ -54,7 +54,7 @@
  * a message before hand detailing the specific error that occurred.
  *
  */
-static void CheckShaderCompilation(const unsigned int shader)
+static void CheckShaderCompilation_(const unsigned int shader)
 {
     int success_flag = true;
     char error_info[1024];
@@ -66,7 +66,7 @@ static void CheckShaderCompilation(const unsigned int shader)
         // We don't care about any printing errors at this point, we're
         // killing the process anyway.
         (void)printf("\nOpenGL shader comp error:\n%s", error_info);
-        ReportError(opengl_shader_compilation_failed);
+        LetoReportError(opengl_shader_compilation_failed);
     }
 }
 
@@ -103,7 +103,7 @@ static void CheckShaderCompilation(const unsigned int shader)
  * provided beforehand differentiates the two.
  *
  */
-static void CheckShaderLinkage(const unsigned int shader)
+static void CheckShaderLinkage_(const unsigned int shader)
 {
     int success_flag = false;
     char error_info[1024];
@@ -113,20 +113,22 @@ static void CheckShaderLinkage(const unsigned int shader)
     {
         glGetProgramInfoLog(shader, 1024, NULL, error_info);
         printf("\nOpenGL shader link error:\n%s", error_info);
-        ReportError(opengl_shader_compilation_failed);
+        LetoReportError(opengl_shader_compilation_failed);
     }
 }
 
-shader_t* LoadShader(const char* name)
+shader_t* LetoLoadShader(const char* name)
 {
     if (name == NULL)
     {
-        ReportWarning(null_string);
+        LetoReportWarning(null_string);
         return NULL;
     }
 
-    char* vraw = GetFileContentsPF("Assets/Shaders/%s/vertex.vs", name);
-    char* fraw = GetFileContentsPF("Assets/Shaders/%s/fragment.fs", name);
+    char* vraw =
+        LetoGetFileContentsPF("Assets/Shaders/%s/vertex.vs", name);
+    char* fraw =
+        LetoGetFileContentsPF("Assets/Shaders/%s/fragment.fs", name);
     const char *vcode = vraw, *fcode = fraw;
 
     unsigned int vid = glCreateShader(GL_VERTEX_SHADER),
@@ -134,33 +136,33 @@ shader_t* LoadShader(const char* name)
 
     glShaderSource(vid, 1, &vcode, NULL);
     glCompileShader(vid);
-    CheckShaderCompilation(vid);
+    CheckShaderCompilation_(vid);
 
     glShaderSource(fid, 1, &fcode, NULL);
     glCompileShader(fid);
-    CheckShaderCompilation(fid);
+    CheckShaderCompilation_(fid);
 
     free(vraw), free(fraw);
 
     shader_t* created_node = calloc(sizeof(shader_t), 1);
-    if (created_node == NULL) ReportError(failed_allocation);
+    if (created_node == NULL) LetoReportError(failed_allocation);
     created_node->name = name;
 
     created_node->id = glCreateProgram();
     glAttachShader(created_node->id, vid);
     glAttachShader(created_node->id, fid);
     glLinkProgram(created_node->id);
-    CheckShaderLinkage(created_node->id);
+    CheckShaderLinkage_(created_node->id);
 
     glDeleteShader(vid), glDeleteShader(fid);
     return created_node;
 }
 
-void UnloadShader(shader_t* node)
+void LetoUnloadShader(shader_t* node)
 {
     if (node == NULL)
     {
-        ReportWarning(null_object);
+        LetoReportWarning(null_object);
         return;
     }
 
@@ -168,14 +170,15 @@ void UnloadShader(shader_t* node)
     free(node);
 }
 
-void UseShader(const shader_t* shader)
+void LetoUseShader(const shader_t* shader)
 {
     if (shader == NULL)
     {
-        ReportWarning(null_object);
+        LetoReportWarning(null_object);
         return;
     }
 
     glUseProgram(shader->id);
-    if (glGetError() != GL_NO_ERROR) ReportError(opengl_malformed_shader);
+    if (glGetError() != GL_NO_ERROR)
+        LetoReportError(opengl_malformed_shader);
 }

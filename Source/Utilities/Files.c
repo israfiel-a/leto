@@ -3,11 +3,26 @@
 #include <Output/Reporter.h>
 #include <Utilities/Strings.h>
 
-FILE* OpenFile(file_mode_t mode, const char* path)
+static FILE* OpenFile_(const char* mode, const char* path)
+{
+    FILE* opened_file = NULL;
+
+#if defined(__LETO__LINUX__)
+    opened_file = fopen(path, mode);
+    if (opened_file == NULL) LetoReportError(file_open_failed);
+#elif defined(__LETO__WINDOWS__)
+    if (fopen_s(&opened_file, path, mode) != 0)
+        LetoReportError(file_open_failed);
+#endif
+
+    return opened_file;
+}
+
+FILE* LetoOpenFile(file_mode_t mode, const char* path)
 {
     if (path == NULL)
     {
-        ReportWarning(null_string);
+        LetoReportWarning(null_string);
         return NULL;
     }
 
@@ -15,115 +30,116 @@ FILE* OpenFile(file_mode_t mode, const char* path)
 
     switch (mode)
     {
-        case r:  opened_file = fopen(path, "rb"); break;
-        case w:  opened_file = fopen(path, "wb"); break;
-        case a:  opened_file = fopen(path, "ab"); break;
-        case rw: opened_file = fopen(path, "wb+"); break;
-        case ra: opened_file = fopen(path, "ab+"); break;
-        default: break;
+        case r:  opened_file = OpenFile_("rb", path); break;
+        case w:  opened_file = OpenFile_("wb", path); break;
+        case a:  opened_file = OpenFile_("ab", path); break;
+        case rw: opened_file = OpenFile_("wb+", path); break;
+        case ra: opened_file = OpenFile_("ab+", path); break;
+        default:
+            break; // Impossible, but some compilers throw a fit if not
+                   // included.
     }
 
-    if (opened_file == NULL) ReportError(file_open_failed);
     return opened_file;
 }
 
-FILE* OpenFileF(file_mode_t mode, const char* path_format, ...)
+FILE* LetoOpenFileF(file_mode_t mode, const char* path_format, ...)
 {
     if (path_format == NULL)
     {
-        ReportWarning(null_string);
+        LetoReportWarning(null_string);
         return NULL;
     }
 
     va_list args;
     va_start(args, path_format);
-    char* file_path = StringCreateV(256, path_format, args);
+    char* file_path = LetoStringCreateV(256, path_format, args);
     va_end(args);
 
-    FILE* file = OpenFile(mode, file_path);
-    StringFree(&file_path);
+    FILE* file = LetoOpenFile(mode, file_path);
+    LetoStringFree(&file_path);
     return file;
 }
 
-void CloseFile(FILE* file)
+void LetoCloseFile(FILE* file)
 {
     if (file == NULL)
     {
-        ReportWarning(preemptive_file_close);
+        LetoReportWarning(preemptive_file_close);
         return;
     }
 
-    if (fclose(file) == EOF) ReportError(file_close_failed);
+    if (fclose(file) == EOF) LetoReportError(file_close_failed);
 }
 
-long GetFileSize(FILE* file)
+size_t LetoGetFileSize(FILE* file)
 {
     if (file == NULL)
     {
-        ReportWarning(null_object);
+        LetoReportWarning(null_object);
         return 0;
     }
 
     if (fseek(file, 0L, SEEK_END) == -1)
-        ReportError(file_positioner_set_failed);
+        LetoReportError(file_positioner_set_failed);
 
     long size = ftell(file);
-    if (size == -1) ReportError(file_positioner_get_failed);
+    if (size == -1) LetoReportError(file_positioner_get_failed);
 
     if (fseek(file, 0L, SEEK_SET) == -1)
-        ReportError(file_positioner_set_failed);
+        LetoReportError(file_positioner_set_failed);
 
-    return size;
+    return (size_t)size;
 }
 
-char* GetFileContents(FILE* file)
+char* LetoGetFileContents(FILE* file)
 {
     if (file == NULL)
     {
-        ReportWarning(null_object);
+        LetoReportWarning(null_object);
         return NULL;
     }
 
-    long size = GetFileSize(file);
-    char* contents = StringCalloc(size);
+    size_t size = LetoGetFileSize(file);
+    char* contents = LetoStringCalloc(size);
     if (fread(contents, 1, size, file) != size)
-        ReportError(file_read_failed);
+        LetoReportError(file_read_failed);
 
     return contents;
 }
 
-char* GetFileContentsP(const char* path)
+char* LetoGetFileContentsP(const char* path)
 {
     if (path == NULL)
     {
-        ReportWarning(null_string);
+        LetoReportWarning(null_string);
         return NULL;
     }
 
-    FILE* file = OpenFile(r, path);
-    char* contents = GetFileContents(file);
-    CloseFile(file);
+    FILE* file = LetoOpenFile(r, path);
+    char* contents = LetoGetFileContents(file);
+    LetoCloseFile(file);
 
     return contents;
 }
 
-char* GetFileContentsPF(const char* path_format, ...)
+char* LetoGetFileContentsPF(const char* path_format, ...)
 {
     if (path_format == NULL)
     {
-        ReportWarning(null_string);
+        LetoReportWarning(null_string);
         return NULL;
     }
 
     va_list args;
     va_start(args, path_format);
 
-    char* path = StringCreateV(256, path_format, args);
-    FILE* file = OpenFile(r, path);
+    char* path = LetoStringCreateV(256, path_format, args);
+    FILE* file = LetoOpenFile(r, path);
     va_end(args);
-    StringFree(&path);
+    LetoStringFree(&path);
 
-    char* contents = GetFileContents(file);
-    CloseFile(file);
+    char* contents = LetoGetFileContents(file);
+    LetoCloseFile(file);
     return contents;
 }

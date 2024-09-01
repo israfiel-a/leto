@@ -2,82 +2,98 @@
 #include <Output/Reporter.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-char* StringMalloc(size_t string_length)
+char* LetoStringMalloc(size_t string_length)
 {
     void* allocated = malloc(string_length + 1);
-    if (allocated == NULL) ReportError(failed_allocation);
+    if (allocated == NULL) LetoReportError(failed_allocation);
     return allocated;
 }
 
-char* StringCalloc(size_t string_length)
+char* LetoStringCalloc(size_t string_length)
 {
     void* allocated = calloc(string_length + 1, 1);
-    if (allocated == NULL) ReportError(failed_allocation);
+    if (allocated == NULL) LetoReportError(failed_allocation);
     return allocated;
 }
 
-void StringFree(char** string)
+void LetoStringFree(char** string)
 {
     free(*string);
     *string = NULL;
 }
 
-void SetStringF(bool warn_overcat, char** buffer, size_t max_string_length,
-                const char* format, ...)
+void LetoSetStringF(bool warn_overcat, char** buffer,
+                    size_t max_string_length, const char* format, ...)
 {
     va_list args;
     va_start(args, format);
 
-    char* temp_buffer = StringMalloc(max_string_length);
-    if (vsnprintf(temp_buffer, max_string_length, format, args) >
-            max_string_length &&
-        warn_overcat)
-        ReportWarning(string_overconcat);
+    char* temp_buffer = LetoStringMalloc(max_string_length);
+    int attempted_characters =
+        vsnprintf(temp_buffer, max_string_length, format, args);
+
+    if (attempted_characters < 0 ||
+        (size_t)attempted_characters > max_string_length && warn_overcat)
+        LetoReportWarning(string_overconcat);
 
     if (*buffer != NULL) free(*buffer);
-    *buffer = StringMalloc(strlen(temp_buffer));
+    *buffer = LetoStringMalloc(strlen(temp_buffer));
     strcpy(*buffer, temp_buffer);
 
     free(temp_buffer);
     va_end(args);
 }
 
-char* StringCreate(size_t max_buffer_size, const char* format, ...)
+char* LetoStringCreate(size_t max_buffer_size, const char* format, ...)
 {
     va_list args;
     va_start(args, format);
 
-    char* buffer = StringMalloc(max_buffer_size);
-    if (vsnprintf(buffer, max_buffer_size, format, args) > max_buffer_size)
-        ReportWarning(string_overconcat);
+    char* buffer = LetoStringMalloc(max_buffer_size);
+    int attempted_characters =
+        vsnprintf(buffer, max_buffer_size, format, args);
+
+    if (attempted_characters < 0 ||
+        (size_t)attempted_characters > max_buffer_size)
+        LetoReportWarning(string_overconcat);
     va_end(args);
 
-    buffer = realloc(buffer, strlen(buffer) + 1);
-    if (buffer == NULL) ReportError(failed_allocation);
+    // This whole block is to satisfy MSVC.
+    char* temp_buffer = realloc(buffer, strlen(buffer) + 1);
+    if (temp_buffer == NULL) LetoReportError(failed_allocation);
+    buffer = temp_buffer;
+
     return buffer;
 }
 
-char* StringCreateV(size_t max_buffer_size, const char* format,
-                    va_list args)
+char* LetoStringCreateV(size_t max_buffer_size, const char* format,
+                        va_list args)
 {
     if (format == NULL)
     {
-        ReportWarning(null_string);
+        LetoReportWarning(null_string);
         return NULL;
     }
 
     if (args == NULL)
     {
-        ReportWarning(null_object);
+        LetoReportWarning(null_object);
         return NULL;
     }
 
-    char* buffer = StringMalloc(max_buffer_size);
-    if (vsnprintf(buffer, max_buffer_size, format, args) > max_buffer_size)
-        ReportWarning(string_overconcat);
+    char* buffer = LetoStringMalloc(max_buffer_size);
+    int attempted_characters =
+        vsnprintf(buffer, max_buffer_size, format, args);
 
-    buffer = realloc(buffer, strlen(buffer) + 1);
-    if (buffer == NULL) ReportError(failed_allocation);
+    if (attempted_characters < 0 ||
+        (size_t)attempted_characters > max_buffer_size)
+        LetoReportWarning(string_overconcat);
+
+    // This whole block is to satisfy MSVC.
+    char* temp_buffer = realloc(buffer, strlen(buffer) + 1);
+    if (temp_buffer == NULL) LetoReportError(failed_allocation);
+    buffer = temp_buffer;
     return buffer;
 }

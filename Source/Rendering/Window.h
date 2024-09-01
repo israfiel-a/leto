@@ -70,7 +70,7 @@
  * window fails, this error will be thrown, and the process will exit.
  *
  */
-void CreateWindow(const char* title);
+void LetoCreateWindow(const char* title);
 
 /**
  * DESCRIPTION
@@ -98,7 +98,7 @@ void CreateWindow(const char* title);
  * Nothing of note.
  *
  */
-void DestroyWindow(void);
+void LetoDestroyWindow(void);
 
 /**
  * DESCRIPTION
@@ -128,7 +128,7 @@ void DestroyWindow(void);
  * Nothing of note.
  *
  */
-void SwapApplicationBuffers(void);
+void LetoSwapBuffers(void);
 
 /**
  * DESCRIPTION
@@ -157,7 +157,7 @@ void SwapApplicationBuffers(void);
  * Nothing of note.
  *
  */
-bool GetApplicationRunState(void);
+bool LetoGetRunState(void);
 
 /**
  * DESCRIPTION
@@ -184,7 +184,7 @@ bool GetApplicationRunState(void);
  * Nothing of note.
  *
  */
-const char* GetApplicationTitle(void);
+const char* LetoGetTitle(void);
 
 /**
  * DESCRIPTION
@@ -212,7 +212,7 @@ const char* GetApplicationTitle(void);
  * Nothing of note.
  *
  */
-uint32_t GetApplicationWidth(void);
+uint32_t LetoGetWidth(void);
 
 /**
  * DESCRIPTION
@@ -240,6 +240,6 @@ uint32_t GetApplicationWidth(void);
  * Nothing of note.
  *
  */
-uint32_t GetApplicationHeight(void);
+uint32_t LetoGetHeight(void);
 
 #endif // __LETO__WINDOW__

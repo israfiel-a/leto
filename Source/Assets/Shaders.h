@@ -27,15 +27,15 @@
 typedef struct
 {
     /**
-     * @brief The name of the shader's containing folder.
-     */
-    const char* name;
-    /**
      * @brief The OpenGL ID of the shader. @warning This should not be
      * changed, as doing so will more likely than not cause an OpenGL
      * error.
      */
     unsigned int id;
+    /**
+     * @brief The name of the shader's containing folder.
+     */
+    const char* name;
 } shader_t;
 
 /**
@@ -84,7 +84,7 @@ typedef struct
  * GetFileContentsPF.
  *
  */
-shader_t* LoadShader(const char* name);
+shader_t* LetoLoadShader(const char* name);
 
 /**
  * DESCRIPTION
@@ -112,7 +112,7 @@ shader_t* LoadShader(const char* name);
  * Nothing to note.
  *
  */
-void UnloadShader(shader_t* node);
+void LetoUnloadShader(shader_t* node);
 
 /**
  * DESCRIPTION
@@ -140,6 +140,6 @@ void UnloadShader(shader_t* node);
  * not valid, this error is thrown and the process exits.
  *
  */
-void UseShader(const shader_t* shader);
+void LetoUseShader(const shader_t* shader);
 
 #endif // __LETO__SHADERS___

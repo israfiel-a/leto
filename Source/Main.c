@@ -1,14 +1,14 @@
 #include <Rendering/Renderer.h>
 #include <Rendering/Window.h>
 
-int main(int argc, char** argv)
+int main(void)
 {
-    CreateWindow("Leto");
-    CreateRenderer(1);
-    AddShader("basic");
+    LetoCreateWindow("Leto");
+    LetoCreateRenderer(1);
+    LetoAddShader("basic");
 
     render();
 
-    DestroyRenderer();
-    DestroyWindow();
+    LetoDestroyRenderer();
+    LetoDestroyWindow();
 }

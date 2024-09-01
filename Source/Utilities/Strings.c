@@ -34,8 +34,9 @@ void LetoSetStringF(bool warn_overcat, char** buffer,
     int attempted_characters =
         vsnprintf(temp_buffer, max_string_length, format, args);
 
-    if (attempted_characters < 0 ||
-        (size_t)attempted_characters > max_string_length && warn_overcat)
+    if ((attempted_characters < 0 ||
+         (size_t)attempted_characters > max_string_length) &&
+        warn_overcat)
         LetoReportWarning(string_overconcat);
 
     if (*buffer != NULL) free(*buffer);

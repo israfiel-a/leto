@@ -45,7 +45,7 @@ jobs:
               run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug && cd build_debug && make
             - name: Build Project (Release)
               run: cmake -B build_release -DCMAKE_BUILD_TYPE=Release && cd build_release && make
-    window-vs2022:
+    windows-vs2022:
        name: Windows (vs2022)
        runs-on: windows-latest
        timeout-minutes: 4

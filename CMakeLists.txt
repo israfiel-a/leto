@@ -75,6 +75,10 @@ include_directories("${GLFW_PATH}/include/GLFW" "${GLAD_PATH}" "${CGLM_PATH}"
 link_directories("${CMAKE_BINARY_DIR}")
 
 set(LIBRARY_LIST glad glfw3 cglm)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    list(ADD m)
+endif()
+
 message(STATUS "Dependency Info:\n  GLFW: ${GLFW_PATH}\n  GLAD: "
     "${GLAD_PATH}\n  CGLM: ${CGLM_PATH}\n  Leto: ${SOURCE_PATH}\n"
     "  Link Directory: ${CMAKE_BINARY_DIR}\n  Linked Libraries: "

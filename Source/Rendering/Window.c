@@ -24,11 +24,12 @@
 #include <glfw3.h>               // GLFW3 public interface
 
 /**
- * @brief The structure that contains all information to be associated with
- * our application's window, like the @struct GLFWwindow parent object, the
- * window's title, and the user's primary monitor's information.
+ * @brief This is the application window's main structure. It is stored
+ * exclusively in this file, and all references that leak from this file
+ * are constant. The will be initialized by @ref CreateWindowContext and
+ * returned back to NULL via @ref DestroyWindow.
  */
-typedef struct
+static struct
 {
     /**
      * @brief The title of the window. This value is @ref malloc ed by @ref
@@ -50,15 +51,53 @@ typedef struct
      * monitor, the refresh rate, and more.
      */
     const GLFWvidmode* _m;
-} window_t;
+} application_window = {NULL, NULL, NULL};
 
 /**
- * @brief This is the application window's main structure. It is stored
- * exclusively in this file, and all references that leak from this file
- * are constant. The will be initialized by @ref CreateWindowContext and
- * returned back to NULL via @ref DestroyWindow.
+ * DESCRIPTION
+ *
+ * @brief Create the GLFW window object. This is abstracted away from the
+ * main window creation method because the underlying functionality of this
+ * changes from platform to platform.
+ *
+ * PARAMETERS
+ *
+ * @param primary_monitor The primary monitor as reported by GLFW. We
+ * assign our window to this monitor if on Linux, if on windows we simply
+ * ignore this, opting to manually fullscreen our window instead.
+ *
+ * RETURN VALUE
+ *
+ * Nothing of note.
+ *
+ * WARNINGS
+ *
+ * Nothing of note.
+ *
+ * ERRORS
+ *
+ * @exception glfw_window_create_failed -- If the window is not created
+ * successfully by GLFW, this error is thrown and the application quits.
+ *
  */
-static window_t application_window = {NULL, NULL, NULL};
+static void CreateWindowObject_(GLFWmonitor* primary_monitor)
+{
+#if defined(__LETO__LINUX)
+    application_window._w = glfwCreateWindow(
+        application_window._m->width, application_window._m->height,
+        application_window.title, primary_monitor, NULL);
+    if (application_window._w == NULL)
+        LetoReportError(glfw_window_create_failed);
+#elif defined(__LETO__WINDOWS__)
+    (void)primary_monitor;
+    application_window._w = glfwCreateWindow(
+        application_window._m->width, application_window._m->height,
+        application_window.title, NULL, NULL);
+    if (application_window._w == NULL)
+        LetoReportError(glfw_window_create_failed);
+    glfwSetWindowPos(application_window._w, 0, 0);
+#endif
+}
 
 void LetoCreateWindow(const char* title)
 {
@@ -93,11 +132,7 @@ void LetoCreateWindow(const char* title)
     glfwWindowHintString(GLFW_X11_INSTANCE_NAME, application_window.title);
 #endif
 
-    application_window._w = glfwCreateWindow(
-        application_window._m->width, application_window._m->height,
-        application_window.title, primary_monitor, NULL);
-    if (application_window._w == NULL)
-        LetoReportError(glfw_window_create_failed);
+    CreateWindowObject_(primary_monitor);
 
     // Make our window's OpenGL context current on this thread.
     glfwMakeContextCurrent(application_window._w);

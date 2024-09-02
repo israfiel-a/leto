@@ -12,7 +12,7 @@
 #elif defined(__LETO__WINDOWS__)
     #define WIN32_LEAN_AND_MEAN
     #include <Windows.h>
-    #include <profileapi.h>
+    #include <sysinfoapi.h>
 #endif
 
 static uint64_t start_time = 0;
@@ -31,8 +31,15 @@ void LetoGetTimeRaw(uint64_t* ms)
     }
     *ms = NSEC_TO_MSEC(retrieved_time.tv_nsec) - start_time;
 #elif defined(__LETO__WINDOWS__)
-    //! todo -- GetSystemTimeAsFileTime
-    *ms = 0;
+    FILETIME time_storage;
+    GetSystemTimeAsFileTime(&time_storage);
+
+    if (start_time == 0)
+    {
+        start_time = SYSTIME_TO_MS(time_storage);
+        return;
+    }
+    *ms = SYSTIME_TO_MS(time_storage);
 #endif
 }
 

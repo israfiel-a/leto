@@ -82,7 +82,7 @@ static struct
  */
 static void CreateWindowObject_(GLFWmonitor* primary_monitor)
 {
-#if defined(__LETO__LINUX)
+#if defined(__LETO__LINUX__)
     application_window._w = glfwCreateWindow(
         application_window._m->width, application_window._m->height,
         application_window.title, primary_monitor, NULL);

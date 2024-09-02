@@ -16,7 +16,12 @@ void LetoCreateRenderer(size_t shader_list_size)
     application_renderer.shader_list_occupied = 0;
 }
 
-void LetoDestroyRenderer(void) { free(application_renderer.shader_list); }
+void LetoDestroyRenderer(void)
+{
+    for (size_t i = 0; i < application_renderer.shader_list_occupied; i++)
+        LetoUnloadShader(application_renderer.shader_list[i]);
+    free(application_renderer.shader_list);
+}
 
 void render(void)
 {

@@ -49,7 +49,7 @@ macro(define_display_server)
 endmacro()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    add_compile_definitions(BUILD_PLATFORM=0 ASSET_DIR="${CMAKE_SOURCE_DIR}/Assets")
+    add_compile_definitions(BUILD_PLATFORM=0)
     add_compile_options(${WINDOWS_COMPILATION_FLAGS})
     message(STATUS "Compiling for Windows.")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -68,6 +68,7 @@ endif()
 set(GLFW_PATH "${CMAKE_SOURCE_DIR}/Dependencies/GLFW")
 set(GLAD_PATH "${CMAKE_SOURCE_DIR}/Dependencies/GLAD")
 set(CGLM_PATH "${CMAKE_SOURCE_DIR}/Dependencies/CGLM")
+set(ASSET_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 set(SOURCE_PATH "${CMAKE_SOURCE_DIR}/Source")
 
 include_directories("${GLFW_PATH}/include/GLFW" "${GLAD_PATH}" "${CGLM_PATH}" 
@@ -102,9 +103,11 @@ file(GLOB PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/Source/*.c
     ${CMAKE_SOURCE_DIR}/Source/Output/*.c ${CMAKE_SOURCE_DIR}/Source/Utilities/*.c
     ${CMAKE_SOURCE_DIR}/Source/Assets/*.c
 )
-message(STATUS "Leto asset directory: ${CMAKE_SOURCE_DIR}/Assets")
+message(STATUS "Leto asset directory: ${ASSET_PATH}")
 file(COPY ${CMAKE_SOURCE_DIR}/Assets DESTINATION 
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    ${ASSET_PATH})
+add_compile_definitions(ASSET_DIR="${ASSET_PATH}/Assets")
+message(STATUS ${ASSET_DIR})
 
 foreach(file ${PROJECT_SOURCES})
     cmake_path(GET file FILENAME CURRENT_FILENAME)

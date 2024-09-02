@@ -49,7 +49,7 @@ macro(define_display_server)
 endmacro()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    add_compile_definitions(BUILD_PLATFORM=0)
+    add_compile_definitions(BUILD_PLATFORM=0 ASSET_DIR="${CMAKE_SOURCE_DIR}/Assets")
     add_compile_options(${WINDOWS_COMPILATION_FLAGS})
     message(STATUS "Compiling for Windows.")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -102,6 +102,10 @@ file(GLOB PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/Source/*.c
     ${CMAKE_SOURCE_DIR}/Source/Output/*.c ${CMAKE_SOURCE_DIR}/Source/Utilities/*.c
     ${CMAKE_SOURCE_DIR}/Source/Assets/*.c
 )
+message(STATUS "Leto asset directory: ${CMAKE_SOURCE_DIR}/Assets")
+file(COPY ${CMAKE_SOURCE_DIR}/Assets DESTINATION 
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
 foreach(file ${PROJECT_SOURCES})
     cmake_path(GET file FILENAME CURRENT_FILENAME)
     set_source_files_properties(${file} PROPERTIES COMPILE_DEFINITIONS 
@@ -114,6 +118,3 @@ message(NOTICE "")
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 add_dependencies(${PROJECT_NAME} glad glfw cglm)
 target_link_libraries(${PROJECT_NAME} ${LIBRARY_LIST})
-
-file(COPY ${CMAKE_SOURCE_DIR}/Assets DESTINATION 
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

@@ -126,9 +126,9 @@ shader_t* LetoLoadShader(const char* name)
     }
 
     char* vraw =
-        LetoGetFileContentsPF("Assets/Shaders/%s/vertex.vs", name);
+        LetoGetFileContentsPF(ASSET_DIR "/Shaders/%s/vertex.vs", name);
     char* fraw =
-        LetoGetFileContentsPF("Assets/Shaders/%s/fragment.fs", name);
+        LetoGetFileContentsPF(ASSET_DIR "/Shaders/%s/fragment.fs", name);
     const char *vcode = vraw, *fcode = fraw;
 
     unsigned int vid = glCreateShader(GL_VERTEX_SHADER),

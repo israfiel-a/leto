@@ -97,7 +97,13 @@ static const reported_message_t warnings[warning_code_count] = {
                         "no such shader found"},
     [shader_list_full] = {{program_error},
                           "shader_list_full",
-                          "the opengl shader list is full to capacity"}};
+                          "the opengl shader list is full to capacity"},
+    [file_path_invalid] = {{user_error},
+                           "file_path_invalid",
+                           "invalid path was passed to file function"},
+    [file_invalid] = {{program_error},
+                      "file_invalid",
+                      "a file handler has become invalid"}};
 
 void LetoReportError_(const char* file, const char* function,
                       uint32_t line, error_code_t code)

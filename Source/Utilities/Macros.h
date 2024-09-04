@@ -17,6 +17,8 @@
 #define BYTES_TO_MEGABYTES(value) (value) / 1000000
 #define KILOBYTES_TO_MEGABYTES(value) (value) / 1000
 
+#define MAX_PATH_LENGTH 256
+
 /**
  * @brief A simple macro to convert nanoseconds to milliseconds. This is
  * literally just a division by 1000000.

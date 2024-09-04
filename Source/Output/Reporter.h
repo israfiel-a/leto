@@ -63,6 +63,8 @@ typedef enum
     preemptive_file_close,
     no_such_shader,
     shader_list_full,
+    file_path_invalid,
+    file_invalid,
     warning_code_count
 } warning_code_t;
 

@@ -20,6 +20,7 @@ char* LetoStringCalloc(size_t string_length)
 
 void LetoStringFree(char** string)
 {
+    if (*string == NULL) return;
     free(*string);
     *string = NULL;
 }

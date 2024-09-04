@@ -1,5 +1,5 @@
 /**
- * @file Window.c
+ * @file Shaders.c
  * @author Israfiel (https://github.com/israfiel-a)
  * @brief Provides the implementation of the public interface defined in
  * @file Shaders.h.
@@ -125,10 +125,8 @@ shader_t* LetoLoadShader(const char* name)
         return NULL;
     }
 
-    char* vraw =
-        LetoGetFileContentsPF(ASSET_DIR "/Shaders/%s/vertex.vs", name);
-    char* fraw =
-        LetoGetFileContentsPF(ASSET_DIR "/Shaders/%s/fragment.fs", name);
+    char* vraw = LetoReadFilePCV(ASSET_DIR "/Shaders/%s/vert.vs", name);
+    char* fraw = LetoReadFilePCV(ASSET_DIR "/Shaders/%s/frag.fs", name);
     const char *vcode = vraw, *fcode = fraw;
 
     unsigned int vid = glCreateShader(GL_VERTEX_SHADER),

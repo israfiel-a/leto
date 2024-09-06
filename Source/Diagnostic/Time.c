@@ -12,17 +12,17 @@
 #elif defined(__LETO__WINDOWS__)
     #define WIN32_LEAN_AND_MEAN
     #include <Windows.h>
-    #include <profileapi.h>
+    #include <sysinfoapi.h>
 #endif
 
 static uint64_t start_time = 0;
 
-void GetTimeRaw(uint64_t* ms)
+void LetoGetTimeRaw(uint64_t* ms)
 {
 #if defined(__LETO__LINUX__)
     struct timespec retrieved_time;
     int time_get_return = clock_gettime(CLOCK_MONOTONIC, &retrieved_time);
-    if (time_get_return == -1) ReportError(time_get_error);
+    if (time_get_return == -1) LetoReportError(time_get_error);
 
     if (start_time == 0)
     {
@@ -31,50 +31,57 @@ void GetTimeRaw(uint64_t* ms)
     }
     *ms = NSEC_TO_MSEC(retrieved_time.tv_nsec) - start_time;
 #elif defined(__LETO__WINDOWS__)
-    //! todo -- GetSystemTimeAsFileTime
-    *ms = 0;
+    FILETIME time_storage;
+    GetSystemTimeAsFileTime(&time_storage);
+
+    if (start_time == 0)
+    {
+        start_time = SYSTIME_TO_MS(time_storage);
+        return;
+    }
+    *ms = SYSTIME_TO_MS(time_storage);
 #endif
 }
 
-static void FormatTimeString(timestamp_t* storage)
+static void FormatTimeString_(timestamp_t* storage)
 {
     if (storage == NULL) return;
 
     switch (storage->format)
     {
         case full:
-            FormattedSetString(
+            LetoSetStringF(
                 false, &storage->string, TIMESTAMP_STRING_MAX_LENGTH,
                 "%d milliseconds, %d seconds, %d minutes",
                 storage->milliseconds, storage->seconds, storage->minutes);
             break;
         case shortened:
-            FormattedSetString(false, &storage->string,
-                               TIMESTAMP_STRING_MAX_LENGTH,
-                               "%dms, %ds, %dm", storage->milliseconds,
-                               storage->seconds, storage->minutes);
+            LetoSetStringF(false, &storage->string,
+                           TIMESTAMP_STRING_MAX_LENGTH, "%dms, %ds, %dm",
+                           storage->milliseconds, storage->seconds,
+                           storage->minutes);
             break;
         case bracketed:
-            FormattedSetString(false, &storage->string,
-                               TIMESTAMP_STRING_MAX_LENGTH, "[%d:%d:%d]",
-                               storage->milliseconds, storage->seconds,
-                               storage->minutes);
+            LetoSetStringF(false, &storage->string,
+                           TIMESTAMP_STRING_MAX_LENGTH, "[%d:%d:%d]",
+                           storage->milliseconds, storage->seconds,
+                           storage->minutes);
             break;
         default: break;
     }
 }
 
-void GetTimestamp(timestamp_t* storage, timestamp_format_t format)
+void LetoGetTimestamp(timestamp_t* storage, timestamp_format_t format)
 {
     if (storage == NULL) return;
 
     uint64_t millisecond_count = 0;
-    GetTimeRaw(&millisecond_count);
+    LetoGetTimeRaw(&millisecond_count);
     if (millisecond_count == 0)
     {
         *storage = TIMESTAMP_INITIALIZER;
         storage->format = format;
-        FormatTimeString(storage);
+        FormatTimeString_(storage);
         return;
     }
 
@@ -89,5 +96,5 @@ void GetTimestamp(timestamp_t* storage, timestamp_format_t format)
         storage->seconds = storage->seconds % 60;
     }
     storage->format = format;
-    FormatTimeString(storage);
+    FormatTimeString_(storage);
 }

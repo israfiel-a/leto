@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.30.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.29.5 FATAL_ERROR)
 message(STATUS "Attempting to build a ${CMAKE_BUILD_TYPE} version of Leto.")
 project("Leto" DESCRIPTION "Leto is an open-world driving game." LANGUAGES C)
 message(STATUS "Project Info:\n  Name: ${PROJECT_NAME}\n  Description: "
@@ -15,13 +15,13 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 message(STATUS "Build directory: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
 set(LINUX_COMPILATION_FLAGS -Wall -Werror -Wpedantic -Wfatal-errors)
-set(WINDOWS_COMPILATION_FLAGS /Wall /WX)
+set(WINDOWS_COMPILATION_FLAGS /Wall /WX /wd5045 /wd4820 /wd4996 /wd4710 /wd4711)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
     add_compile_definitions(BUILD_TYPE=0)
     list(APPEND LINUX_COMPILATION_FLAGS -g -fsanitize=undefined)
-    list(APPEND WINDOWS_COMPILATION_FLAGS /Z7 /fsanitize=address)
+    list(APPEND WINDOWS_COMPILATION_FLAGS /fsanitize=address)
     set(LINUX_LINKING_FLAGS -fsanitize=undefined)
 
     message(NOTICE "  Compile Commands: ../compile_commands.json")
@@ -67,15 +67,22 @@ endif()
 
 set(GLFW_PATH "${CMAKE_SOURCE_DIR}/Dependencies/GLFW")
 set(GLAD_PATH "${CMAKE_SOURCE_DIR}/Dependencies/GLAD")
+set(CGLM_PATH "${CMAKE_SOURCE_DIR}/Dependencies/CGLM")
+set(ASSET_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 set(SOURCE_PATH "${CMAKE_SOURCE_DIR}/Source")
 
-include_directories("${GLFW_PATH}/include/GLFW" "${GLAD_PATH}" "${SOURCE_PATH}")
+include_directories("${GLFW_PATH}/include/GLFW" "${GLAD_PATH}" "${CGLM_PATH}" 
+    "${SOURCE_PATH}")
 link_directories("${CMAKE_BINARY_DIR}")
 
-set(LIBRARY_LIST glad glfw3 m)
+set(LIBRARY_LIST glad glfw3 cglm)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    list(APPEND LIBRARY_LIST m)
+endif()
+
 message(STATUS "Dependency Info:\n  GLFW: ${GLFW_PATH}\n  GLAD: "
-    "${GLAD_PATH}\n  Leto: ${SOURCE_PATH}\n  Link Directory: "
-    "${CMAKE_BINARY_DIR}\n  Linked Libraries: "
+    "${GLAD_PATH}\n  CGLM: ${CGLM_PATH}\n  Leto: ${SOURCE_PATH}\n"
+    "  Link Directory: ${CMAKE_BINARY_DIR}\n  Linked Libraries: "
     "${LIBRARY_LIST}")
 
 set(GLFW_BUILD_DOCS false)
@@ -88,12 +95,20 @@ message(STATUS "Adding GLFW to the project. Options:\n  "
 
 add_subdirectory("${GLFW_PATH}")
 add_subdirectory("${GLAD_PATH}")
+add_subdirectory("${CGLM_PATH}")
 
 message(STATUS "Leto source files:")
 file(GLOB PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/Source/*.c
-    ${CMAKE_SOURCE_DIR}/Source/Windowing/*.c ${CMAKE_SOURCE_DIR}/Source/Diagnostic/*.c
+    ${CMAKE_SOURCE_DIR}/Source/Rendering/*.c ${CMAKE_SOURCE_DIR}/Source/Diagnostic/*.c
     ${CMAKE_SOURCE_DIR}/Source/Output/*.c ${CMAKE_SOURCE_DIR}/Source/Utilities/*.c
+    ${CMAKE_SOURCE_DIR}/Source/Assets/*.c
 )
+message(STATUS "Leto asset directory: ${ASSET_PATH}")
+file(COPY ${CMAKE_SOURCE_DIR}/Assets DESTINATION 
+    ${ASSET_PATH})
+add_compile_definitions(ASSET_DIR="${ASSET_PATH}/Assets")
+message(STATUS ${ASSET_DIR})
+
 foreach(file ${PROJECT_SOURCES})
     cmake_path(GET file FILENAME CURRENT_FILENAME)
     set_source_files_properties(${file} PROPERTIES COMPILE_DEFINITIONS 
@@ -104,5 +119,5 @@ endforeach()
 message(NOTICE "")
 message(NOTICE "")
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
-add_dependencies(${PROJECT_NAME} glad glfw)
+add_dependencies(${PROJECT_NAME} glad glfw cglm)
 target_link_libraries(${PROJECT_NAME} ${LIBRARY_LIST})

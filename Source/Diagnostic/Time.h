@@ -5,7 +5,7 @@
  * string.
  * @date 2024-08-22
  *
- * @copyright (c) 2024 - Israfiel
+ * @copyright (c) 2024 - the Leto Team
  */
 
 #ifndef __LETO__TIME__
@@ -34,7 +34,7 @@ typedef struct
 #define TIMESTAMP_INITIALIZER                                             \
     (timestamp_t) { NULL, full, 0, 0, 0 }
 
-void GetTimeRaw(uint64_t* ms);
-void GetTimestamp(timestamp_t* storage, timestamp_format_t format);
+void LetoGetTimeRaw(uint64_t* ms);
+void LetoGetTimestamp(timestamp_t* storage, timestamp_format_t format);
 
 #endif // __LETO__TIME__

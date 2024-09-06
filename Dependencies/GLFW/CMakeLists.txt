@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.30.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.29.5 FATAL_ERROR)
 project("GLFW" VERSION 3.5.0 LANGUAGES C)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     add_compile_options(-Ofast -Wno-pedantic)
-else()
-    add_compile_options(/w)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    add_compile_options(/wd4191 /wd4242)
 endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})

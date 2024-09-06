@@ -43,9 +43,7 @@
  *
  * WARNINGS
  *
- * One warning can be thrown by this function.
- * @warning null_string -- If either @param path or @param mode is passed
- * to the function as NULL, this warning is thrown and NULL is returned.
+ * Nothing of note.
  *
  * ERRORS
  *
@@ -56,12 +54,6 @@
  */
 static FILE* OpenFile_(const char* path, const char* mode)
 {
-    if (path == NULL || mode == NULL)
-    {
-        LetoReportWarning(null_string);
-        return NULL;
-    }
-
     FILE* opened_file = NULL;
 
 // MSVC complains if we use fopen instead of fopen_s, so we just compile
@@ -93,9 +85,7 @@ static FILE* OpenFile_(const char* path, const char* mode)
  *
  * WARNINGS
  *
- * One warning can be thrown by this function.
- * @warning null_object -- If the file handle passed to the function is
- * NULL, this error is thrown and 0 is returned.
+ * Nothing of note.
  *
  * ERRORS
  *
@@ -111,17 +101,12 @@ static FILE* OpenFile_(const char* path, const char* mode)
  */
 static size_t GetFileSize_(FILE* file)
 {
-    if (file == NULL)
-    {
-        LetoReportWarning(null_object);
-        return 0;
-    }
-
     if (fseek(file, 0L, SEEK_END) == -1)
         LetoReportError(file_positioner_set_failed);
 
     long size = ftell(file);
     if (size == -1) LetoReportError(file_positioner_get_failed);
+    // Reset the file positioner.
     if (fseek(file, 0L, SEEK_SET) == -1)
         LetoReportError(file_positioner_set_failed);
 
@@ -170,9 +155,30 @@ void LetoCloseFile(file_t* file)
     }
 
     if (fclose(file->handle) == EOF) LetoReportError(file_close_failed);
-    LetoStringFree(&file->path);
     if (file->contents != NULL) free(file->contents);
+
+    char* temp_path_storage = (char*)file->path;
+    LetoStringFree(&temp_path_storage);
+
     free(file);
+}
+
+size_t LetoGetFilesize(file_t* file)
+{
+    if (file == NULL)
+    {
+        LetoReportWarning(null_object);
+        return 0;
+    }
+
+    if (file->handle == NULL)
+    {
+        LetoReportWarning(file_invalid);
+        return 0;
+    }
+
+    file->size = GetFileSize_(file->handle);
+    return file->size;
 }
 
 void LetoReadFile(file_t* file)
@@ -190,38 +196,33 @@ void LetoReadFile(file_t* file)
     }
 
     file->contents = calloc(file->size, 1);
+    if (file->contents == NULL) LetoReportError(failed_allocation);
+
+    // Set our positioner to beginning of the file.
+    if (fseek(file->handle, 0L, SEEK_SET) == -1)
+        LetoReportError(file_positioner_set_failed);
     if (fread(file->contents, 1, file->size, file->handle) != file->size)
         LetoReportError(file_read_failed);
+    // Reset the positioner.
     if (fseek(file->handle, 0L, SEEK_SET) == -1)
         LetoReportError(file_positioner_set_failed);
 }
 
-uint8_t* LetoReadFileP(const char* path)
+uint8_t* LetoReadFileP(bool terminate, const char* path)
 {
     file_t* opened_file = LetoOpenFile(r, path);
     LetoReadFile(opened_file);
-
     uint8_t* buffer = malloc(opened_file->size);
-    (void)memcpy(buffer, opened_file->contents, opened_file->size);
+    if (buffer == NULL) LetoReportError(failed_allocation);
+
+    (void)memcpy(buffer, opened_file->contents, opened_file->size - 1);
+    if (terminate) buffer[opened_file->size - 1] = 0;
 
     LetoCloseFile(opened_file);
     return buffer;
 }
 
-char* LetoReadFilePC(const char* path)
-{
-    file_t* opened_file = LetoOpenFile(r, path);
-    LetoReadFile(opened_file);
-
-    char* buffer = LetoStringCalloc(opened_file->size);
-    (void)strncpy(buffer, (char*)opened_file->contents,
-                  opened_file->size - 1);
-
-    LetoCloseFile(opened_file);
-    return buffer;
-}
-
-uint8_t* LetoReadFilePV(const char* format, ...)
+uint8_t* LetoReadFilePV(bool terminate, const char* format, ...)
 {
     va_list args;
     va_start(args, format);
@@ -230,29 +231,29 @@ uint8_t* LetoReadFilePV(const char* format, ...)
 
     file_t* opened_file = LetoOpenFile(r, new_path);
     LetoReadFile(opened_file);
-
     uint8_t* buffer = malloc(opened_file->size);
-    (void)memcpy(buffer, opened_file->contents, opened_file->size);
+    if (buffer == NULL) LetoReportError(failed_allocation);
 
-    LetoCloseFile(opened_file);
-    return buffer;
-}
-
-char* LetoReadFilePCV(const char* format, ...)
-{
-    va_list args;
-    va_start(args, format);
-    char* new_path = LetoStringCreateV(MAX_PATH_LENGTH, format, args);
-    va_end(args);
-
-    file_t* opened_file = LetoOpenFile(r, new_path);
-    LetoReadFile(opened_file);
-
-    char* buffer = LetoStringCalloc(opened_file->size);
-    (void)strncpy(buffer, (char*)opened_file->contents,
-                  opened_file->size - 1);
+    (void)memcpy(buffer, opened_file->contents, opened_file->size - 1);
+    if (terminate) buffer[opened_file->size - 1] = 0;
 
     LetoCloseFile(opened_file);
     LetoStringFree(&new_path);
     return buffer;
+}
+
+void LetoWriteFile(file_t* file, uint8_t* buffer, size_t buffer_size)
+{
+    if (file == NULL || buffer == NULL)
+    {
+        LetoReportWarning(null_object);
+        return;
+    }
+
+    if (file->permissions == r) return;
+
+    // Don't set the file positioner off the bat, instead trusting the
+    // positioner to be in whatever position it should be in.
+    if (fwrite(buffer, 1, buffer_size, file->handle) != buffer_size)
+        LetoReportError(file_write_failed);
 }

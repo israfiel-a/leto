@@ -24,6 +24,7 @@ typedef enum
     file_positioner_set_failed,
     file_positioner_get_failed,
     file_read_failed,
+    file_write_failed,
     glfw_init_failed,
     glfw_window_create_failed,
     glfw_monitor_get_failed,

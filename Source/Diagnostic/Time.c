@@ -22,7 +22,7 @@ void LetoGetTimeRaw(uint64_t* ms)
 #if defined(__LETO__LINUX__)
     struct timespec retrieved_time;
     int time_get_return = clock_gettime(CLOCK_MONOTONIC, &retrieved_time);
-    if (time_get_return == -1) LetoReportError(time_get_error);
+    if (time_get_return == -1) LetoReport(time_error);
 
     if (start_time == 0)
     {

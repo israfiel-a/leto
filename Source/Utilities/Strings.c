@@ -7,14 +7,14 @@
 char* LetoStringMalloc(size_t string_length)
 {
     void* allocated = malloc(string_length + 1);
-    if (allocated == NULL) LetoReportError(failed_allocation);
+    if (allocated == NULL) LetoReport(failed_buffer);
     return allocated;
 }
 
 char* LetoStringCalloc(size_t string_length)
 {
     void* allocated = calloc(string_length + 1, 1);
-    if (allocated == NULL) LetoReportError(failed_allocation);
+    if (allocated == NULL) LetoReport(failed_buffer);
     return allocated;
 }
 
@@ -38,7 +38,7 @@ void LetoSetStringF(bool warn_overcat, char** buffer,
     if ((attempted_characters < 0 ||
          (size_t)attempted_characters > max_string_length) &&
         warn_overcat)
-        LetoReportWarning(string_overconcat);
+        LetoReport(small_buffer);
 
     if (*buffer != NULL) free(*buffer);
     *buffer = LetoStringMalloc(strlen(temp_buffer));
@@ -59,12 +59,12 @@ char* LetoStringCreate(size_t max_buffer_size, const char* format, ...)
 
     if (attempted_characters < 0 ||
         (size_t)attempted_characters > max_buffer_size)
-        LetoReportWarning(string_overconcat);
+        LetoReport(small_buffer);
     va_end(args);
 
     // This whole block is to satisfy MSVC.
     char* temp_buffer = realloc(buffer, strlen(buffer) + 1);
-    if (temp_buffer == NULL) LetoReportError(failed_allocation);
+    if (temp_buffer == NULL) LetoReport(failed_buffer);
     buffer = temp_buffer;
 
     return buffer;
@@ -73,15 +73,9 @@ char* LetoStringCreate(size_t max_buffer_size, const char* format, ...)
 char* LetoStringCreateV(size_t max_buffer_size, const char* format,
                         va_list args)
 {
-    if (format == NULL)
+    if (format == NULL || args == NULL)
     {
-        LetoReportWarning(null_string);
-        return NULL;
-    }
-
-    if (args == NULL)
-    {
-        LetoReportWarning(null_object);
+        LetoReport(null_param);
         return NULL;
     }
 
@@ -91,11 +85,11 @@ char* LetoStringCreateV(size_t max_buffer_size, const char* format,
 
     if (attempted_characters < 0 ||
         (size_t)attempted_characters > max_buffer_size)
-        LetoReportWarning(string_overconcat);
+        LetoReport(small_buffer);
 
     // This whole block is to satisfy MSVC.
     char* temp_buffer = realloc(buffer, strlen(buffer) + 1);
-    if (temp_buffer == NULL) LetoReportError(failed_allocation);
+    if (temp_buffer == NULL) LetoReport(failed_buffer);
     buffer = temp_buffer;
     return buffer;
 }

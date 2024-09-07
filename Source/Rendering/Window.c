@@ -86,15 +86,13 @@ static void CreateWindowObject_(GLFWmonitor* primary_monitor)
     application_window._w = glfwCreateWindow(
         application_window._m->width, application_window._m->height,
         application_window.title, primary_monitor, NULL);
-    if (application_window._w == NULL)
-        LetoReportError(glfw_window_create_failed);
+    if (application_window._w == NULL) LetoReport(null_window);
 #elif defined(__LETO__WINDOWS__)
     (void)primary_monitor;
     application_window._w = glfwCreateWindow(
         application_window._m->width, application_window._m->height,
         application_window.title, NULL, NULL);
-    if (application_window._w == NULL)
-        LetoReportError(glfw_window_create_failed);
+    if (application_window._w == NULL) LetoReport(null_window);
     glfwSetWindowPos(application_window._w, 0, 0);
 #endif
 }
@@ -103,11 +101,11 @@ void LetoCreateWindow(const char* title)
 {
     if (application_window._w != NULL)
     {
-        LetoReportWarning(double_window_creation);
+        LetoReport(window_null);
         return;
     }
 
-    if (!glfwInit()) LetoReportError(glfw_init_failed);
+    if (!glfwInit()) LetoReport(glfw_init);
     // OpenGL Core Profile v4.6
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -118,10 +116,9 @@ void LetoCreateWindow(const char* title)
                    "%s | v"__LETO__VERSION__STRING__, title);
 
     GLFWmonitor* primary_monitor = glfwGetPrimaryMonitor();
-    if (primary_monitor == NULL) LetoReportError(glfw_monitor_get_failed);
+    if (primary_monitor == NULL) LetoReport(glfw_monitor);
     application_window._m = glfwGetVideoMode(primary_monitor);
-    if (application_window._m == NULL)
-        LetoReportError(glfw_monitor_get_failed);
+    if (application_window._m == NULL) LetoReport(glfw_monitor);
 
 // Depending on what display server we're using, either set the
 // Wayland app ID or the X11 class name.
@@ -136,15 +133,14 @@ void LetoCreateWindow(const char* title)
 
     // Make our window's OpenGL context current on this thread.
     glfwMakeContextCurrent(application_window._w);
-    if (!gladLoadGL(glfwGetProcAddress))
-        LetoReportError(opengl_init_failed);
+    if (!gladLoadGL(glfwGetProcAddress)) LetoReport(gl_init);
 }
 
 void LetoDestroyWindow(void)
 {
     if (application_window._w == NULL)
     {
-        LetoReportWarning(preemptive_window_free);
+        LetoReport(window_null);
         return;
     }
 
@@ -160,7 +156,7 @@ void LetoSwapBuffers(void)
 {
     if (application_window._w == NULL)
     {
-        LetoReportWarning(preemptive_buffer_swap);
+        LetoReport(window_null);
         return;
     }
     glfwSwapBuffers(application_window._w);
@@ -170,7 +166,7 @@ bool LetoGetRunState(void)
 {
     if (application_window._w == NULL)
     {
-        LetoReportWarning(preemptive_window_info);
+        LetoReport(window_null);
         return false;
     }
     return !glfwWindowShouldClose(application_window._w);
@@ -178,8 +174,7 @@ bool LetoGetRunState(void)
 
 const char* LetoGetTitle(void)
 {
-    if (application_window.title == NULL)
-        LetoReportWarning(preemptive_window_info);
+    if (application_window.title == NULL) LetoReport(window_null);
     return application_window.title;
 }
 
@@ -187,7 +182,7 @@ uint32_t LetoGetWidth(void)
 {
     if (application_window._m == NULL)
     {
-        LetoReportWarning(preemptive_window_info);
+        LetoReport(window_null);
         return 0;
     }
     return (uint32_t)application_window._m->width;
@@ -197,7 +192,7 @@ uint32_t LetoGetHeight(void)
 {
     if (application_window._m == NULL)
     {
-        LetoReportWarning(preemptive_window_info);
+        LetoReport(window_null);
         return 0;
     }
     return (uint32_t)application_window._m->height;

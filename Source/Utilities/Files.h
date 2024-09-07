@@ -42,19 +42,19 @@ typedef enum
     w,
     /**
      * @brief Open the file in append-only mode (content is @b not
-     * overwritten). Nonexistent files will be created.  (ab)
+     * overwritten). Nonexistent files will be created. (ab)
      */
     a,
     /**
      * @brief Open the file in read-write mode, meaning the file can be
      * read and any data written to it will overwrite previous contents.
-     * Nonexistent files will be created.  (wb+)
+     * Nonexistent files will be created. (wb+)
      */
     rw,
     /**
      * @brief Open the file in read-append mode. The file can be read from
      * and any data written to it will be added to the end of the file.
-     * Nonexistent files will be created.  (ab+)
+     * Nonexistent files will be created. (ab+)
      */
     ra,
 } file_mode_t;

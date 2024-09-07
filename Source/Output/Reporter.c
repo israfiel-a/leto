@@ -1,160 +1,78 @@
-#include "Reporter.h"
-#include <Diagnostic/Time.h>
-#include <errno.h>
-#include <gl.h>
-#include <glfw3.h>
-#include <stdio.h>
-#include <stdlib.h>
+/**
+ * @file Reporter.c
+ * @author Israfiel (https://github.com/israfiel-a)
+ * @brief Provides the definition for the warning/error reporter interface
+ * as provided by @file Reporter.h.
+ * @date 2024-09-07
+ *
+ * @copyright (c) 2024 - the Leto Team
+ * This document is under the GNU Affero General Public License v3.0. It
+ * can be modified and distributed (commercially or otherwise) freely, and
+ * can be used privately and within patents. No liability or warranty is
+ * guaranteed. However, on use, the user must state license and copyright,
+ * any changes made, and disclose the source of the document. For more
+ * information see the @file LICENSE.md file included with this
+ * distribution of the Leto source code.
+ */
 
-typedef struct
+#include "Reporter.h"             // Public interface parents
+#include <Diagnostic/Time.h>      // Time utilities
+#include <Utilities/Attributes.h> // Cross-platform attributes
+#include <Utilities/Strings.h>    // String utilities
+#include <Utilities/Subshell.h>   // Subshell functionality
+#include <stddef.h>               // Standard macro definitions
+#include <stdio.h>                // Standard I/O functionality
+#include <stdlib.h>               // exit()
+
+#define ERROR_FORMAT "%s() in %s @ %d :: %s -- %s, type: 0x%x\n"
+
+static problem_code_t last_warning = problem_count;
+
+static __LETO__NORETURN__ PrintError_(const problem_t* problem,
+                                      const char* file,
+                                      const char* function, uint32_t line)
 {
-    union
+#if defined(__LETO__LINUX__)
+    if (CheckLibNotify())
     {
-        enum
-        {
-            os = 0x0111E,
-            glfw = 0x112E,
-            opengl = 0x113E,
-            leto = 0x114E,
-        } error;
-        enum
-        {
-            user_error = 0x111C,
-            program_error = 0x112C
-        } warning;
-    } type;
-    const char* name;
-    const char* description;
-} reported_message_t;
+        char* command = malloc(256);
+        if (command == NULL) exit(EXIT_FAILURE);
+        snprintf(command, 256,
+                 "notify-send -u critical -t -1 -a Leto \"Leto Error "
+                 "Report\" \"" ERROR_FORMAT "\"",
+                 function, file, line, problem->name, problem->description,
+                 problem->type);
 
-static const reported_message_t errors[error_code_count] = {
-    [failed_allocation] = {{os},
-                           "failed_allocation",
-                           "failed to allocate memory"},
-    [time_get_error] = {{os}, "time_get_error", "failed to get time"},
-    [file_open_failed] = {{os}, "file_open_failed", "failed to open file"},
-    [file_close_failed] = {{os},
-                           "file_close_failed",
-                           "failed to close file"},
-    [file_positioner_set_failed] = {{os},
-                                    "file_positioner_set_failed",
-                                    "failed to set file position marker"},
-    [file_positioner_get_failed] = {{os},
-                                    "file_positioner_get_failed",
-                                    "failed to get file position marker"},
-    [file_read_failed] = {{os}, "file_read_failed", "failed to read file"},
-    [file_write_failed] = {{os},
-                           "file_write_failed",
-                           "failed to write to file"},
-    [glfw_init_failed] = {{glfw}, "glfw_init_failed", "glfw init failed"},
-    [glfw_window_create_failed] = {{glfw},
-                                   "glfw_window_create_failed",
-                                   "glfw window creation failed"},
-    [glfw_monitor_get_failed] = {{glfw},
-                                 "glfw_monitor_get_failed",
-                                 "glfw failed to grab primary monitor"},
-    [opengl_init_failed] = {{opengl},
-                            "opengl_init_failed",
-                            "failed to get opengl context"},
-    [opengl_shader_compilation_failed] =
-        {{opengl},
-         "opengl_shader_compilation_failed",
-         "failed to compile shader (see prior printout for info)"},
-    [opengl_malformed_shader] = {{opengl},
-                                 "opengl_malformed_shader",
-                                 "an invalid shader object was used"}};
-
-static const reported_message_t warnings[warning_code_count] = {
-    [null_error] = {{user_error},
-                    "null_error",
-                    "passed a null error to the reporter"},
-    [null_warning] = {{user_error},
-                      "null_warning",
-                      "passed a null warning to the reporter"},
-    [null_object] = {{user_error}, "passed a null object to a function"},
-    [null_string] = {{user_error},
-                     "null_string",
-                     "passed a null string to a function"},
-    [string_overconcat] = {{program_error},
-                           "string_overconcat",
-                           "string implicitly concated"},
-    [preemptive_window_free] = {{user_error},
-                                "preemptive_window_free",
-                                "freed window before creation"},
-    [double_window_creation] = {{user_error},
-                                "double_window_creation",
-                                "created window twice"},
-    [preemptive_buffer_swap] = {{user_error},
-                                "preemptive_buffer_swap",
-                                "swapped buffers without window created"},
-    [preemptive_window_info] =
-        {{user_error},
-         "preemptive_window_info",
-         "tried to get window info without creating window"},
-    [preemptive_file_close] =
-        {{user_error},
-         "preemptive_file_close",
-         "tried to close a file before it was opened"},
-    [no_such_shader] = {{program_error},
-                        "no_such_shader",
-                        "no such shader found"},
-    [shader_list_full] = {{program_error},
-                          "shader_list_full",
-                          "the opengl shader list is full to capacity"},
-    [file_path_invalid] = {{user_error},
-                           "file_path_invalid",
-                           "invalid path was passed to file function"},
-    [file_invalid] = {{program_error},
-                      "file_invalid",
-                      "a file handler has become invalid"}};
-
-void LetoReportError_(const char* file, const char* function,
-                      uint32_t line, error_code_t code)
-{
-    if (code == error_code_count) { exit(EXIT_FAILURE); }
-    const reported_message_t reported_error = errors[code];
-
-    int extra_info = 0;
-    const char* extra_info_desc = NULL;
-    switch (reported_error.type.error)
-    {
-        case os:     extra_info = errno; break;
-        case glfw:   extra_info = glfwGetError(&extra_info_desc); break;
-        case opengl: extra_info = glGetError(); break;
-        case leto:
-        default:     break;
+        RunCommand(command);
     }
-
-    printf("\033[1;31m--\n-- !! Leto Error !!\n-- From:\033[0;31m %s :: "
-           "%s(), ln. %d\n\033[1m-- Info: \n--   Kind:\033[0;31m "
-           "0x%x\n\033[1m--   Code:\033[0;31m %d :: %s\n\033[1m--   "
-           "Description:\033[0;31m %s\n--    Extra:\033[0;31m "
-           "%d :: %s\033[1m\n--\033[0m\n",
-           file, function, line, reported_error.type.error, code,
-           reported_error.name, reported_error.description, extra_info,
-           extra_info_desc);
+    else
+        printf(ERROR_FORMAT, function, file, line, problem->name,
+               problem->description, problem->type);
+#elif defined(__LETO__WINDOWS__)
+//! todo
+#endif
 
     exit(EXIT_FAILURE);
 }
 
-void LetoReportWarning_(const char* file, const char* function,
-                        uint32_t line, warning_code_t code)
+void LetoReport_(problem_code_t problem, const char* file,
+                 const char* function, uint32_t line)
 {
-    if (code == warning_code_count)
-    {
-        LetoReportWarning(null_warning);
-        return;
-    }
-    const reported_message_t reported_warning = warnings[code];
-    timestamp_t timestamp = TIMESTAMP_INITIALIZER;
-    LetoGetTimestamp(&timestamp, shortened);
+    if (problem == problem_count) return;
+    if (file == NULL || function == NULL) LetoReport(null_param);
 
-    printf("\033[1;33m--\n-- !! Leto Warning !!\n-- At Timestamp: "
-           "\033[0;33m%s\n\033[1m-- From:\033[0;33m %s :: %s(), ln. "
-           "%d\n\033[1m-- Info: \n--   Kind:\033[0;33m 0x%x\n\033[1m--   "
-           "Code:\033[0;33m %d :: %s\n\033[1m--   Description:\033[0;33m "
-           "%s\033[1m\n--\033[0m\n",
-           timestamp.string, file, function, line,
-           reported_warning.type.warning, code, reported_warning.name,
-           reported_warning.description);
+    const problem_t reported_problem = problems[problem];
+    if (!reported_problem.fatal)
+    {
+        timestamp_t current_time;
+        LetoGetTimestamp(&current_time, bracketed);
+
+        printf("%s " ERROR_FORMAT, current_time.string, function, file,
+               line, reported_problem.name, reported_problem.description,
+               reported_problem.type);
+        last_warning = problem;
+    }
+    else PrintError_(&reported_problem, file, function, line);
 }
+
+problem_code_t LetoGetWarning(void) { return last_warning; }

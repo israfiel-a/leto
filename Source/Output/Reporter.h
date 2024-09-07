@@ -1,78 +1,103 @@
 /**
- * @file Error.h
+ * @file Reporter.h
  * @author Israfiel (https://github.com/israfiel-a)
- * @brief Provides functionality for reporting errors to the end user,
- * either in the command line or via an operating-system-specific
- * notification software.
- * @date 2024-08-22
+ * @brief Provides a standard interface for throwing and handling errors,
+ * warnings, and all of their peripherals.
+ * @date 2024-09-07
  *
  * @copyright (c) 2024 - the Leto Team
+ * This document is under the GNU Affero General Public License v3.0. It
+ * can be modified and distributed (commercially or otherwise) freely, and
+ * can be used privately and within patents. No liability or warranty is
+ * guaranteed. However, on use, the user must state license and copyright,
+ * any changes made, and disclose the source of the document. For more
+ * information see the @file LICENSE.md file included with this
+ * distribution of the Leto source code.
  */
 
 #ifndef __LETO__REPORTER__
 #define __LETO__REPORTER__
 
-#include <Utilities/Attributes.h>
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef enum
 {
-    failed_allocation,
-    time_get_error,
-    file_open_failed,
-    file_close_failed,
-    file_positioner_set_failed,
-    file_positioner_get_failed,
-    file_read_failed,
-    file_write_failed,
-    glfw_init_failed,
-    glfw_window_create_failed,
-    glfw_monitor_get_failed,
-    opengl_init_failed,
-    opengl_shader_compilation_failed,
-    opengl_malformed_shader,
-    error_code_count
-} error_code_t;
+    /**
+     * @defgroup General-purpose problems.
+     */
+    null_param,
+    failed_buffer,
+    small_buffer,
+    no_such_value,
+    array_full,
+    time_error,
+    /**
+     * @defgroup Specific interface problems.
+     */
+    glfw_init,
+    glfw_monitor,
+    gl_init,
+    gl_shader_comp,
+    gl_shader_bad,
+    null_window,
+    window_null,
+    file_null,
+    file_pos_get,
+    file_pos_set,
+    file_read,
+    file_write,
+    /**
+     * @defgroup Problem counter.
+     */
+    problem_count,
+} problem_code_t;
 
-/**
- * @brief
- *
- * @param file
- * @param function
- * @param line
- * @param code
- * @return _Noreturn
- * @todo implement notification functionality
- */
-__LETO__NORETURN__ LetoReportError_(const char* file, const char* function,
-                                    uint32_t line, error_code_t code);
-
-#define LetoReportError(code)                                             \
-    LetoReportError_(FILENAME, __func__, __LINE__, code)
-
-typedef enum
+typedef struct
 {
-    null_error,
-    null_warning,
-    null_object,
-    null_string,
-    string_overconcat,
-    preemptive_window_free,
-    double_window_creation,
-    preemptive_buffer_swap,
-    preemptive_window_info,
-    preemptive_file_close,
-    no_such_shader,
-    shader_list_full,
-    file_path_invalid,
-    file_invalid,
-    warning_code_count
-} warning_code_t;
+    const char* name;
+    const char* description;
+    bool fatal;
+    enum
+    {
+        /**
+         * @brief This flag represents that the problem was out of our
+         * control, like an allocation failure or failed file operation.
+         */
+        os = 0x111E,
+        glfw = 0x112E,
+        opengl = 0x113E,
+        leto = 0x114E
+    } type;
+} problem_t;
 
-void LetoReportWarning_(const char* file, const char* function,
-                        uint32_t line, warning_code_t code);
+static const problem_t problems[problem_count] = {
+    {"null_param", "a null parameter was passed", false, leto},
+    {"failed_buffer", "an allocation failure occurred", true, os},
+    {"small_buffer", "tried to access past buffer bounds", false, leto},
+    {"no_such_value", "no equal value found in list", false, leto},
+    {"array_full", "tried to assign past array bounds", false, leto},
+    {"time_error", "failed to get time", true, os},
+    {"glfw_init", "failed to initialize glfw", true, glfw},
+    {"glfw_monitor", "failed to get glfw monitor", true, glfw},
+    {"gl_init", "failed to initialize glad/opengl", true, opengl},
+    {"gl_shader_comp", "failed to compile shader", true, opengl},
+    {"gl_shader_bad", "failed to utilize shader", true, opengl},
+    {"window_null", "call made to nonexistent window", false, leto},
+    {"null_window", "failed to create window", true, glfw},
+    {"file_null", "call made to nonexistent file", false, leto},
+    {"file_pos_get", "failed to get file positioner", false, os},
+    {"file_pos_set", "failed to set file positioner", false, os},
+    {"file_read", "failed to read (from?) file", false, os},
+    {"file_write", "failed to write to file", false, os},
+};
 
-#define LetoReportWarning(code)                                           \
-    LetoReportWarning_(FILENAME, __func__, __LINE__, code)
+void LetoReport_(problem_code_t problem, const char* file,
+                 const char* function, uint32_t line);
+
+#define LetoReport(problem)                                               \
+    LetoReport_(problem, FILENAME, __func__, __LINE__)
+
+problem_code_t LetoGetWarning(void);
 
 #endif // __LETO__REPORTER__

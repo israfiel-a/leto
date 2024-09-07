@@ -66,7 +66,7 @@ static void CheckShaderCompilation_(const unsigned int shader)
         // We don't care about any printing errors at this point, we're
         // killing the process anyway.
         (void)printf("\nOpenGL shader comp error:\n%s", error_info);
-        LetoReportError(opengl_shader_compilation_failed);
+        LetoReport(gl_shader_comp);
     }
 }
 
@@ -113,7 +113,7 @@ static void CheckShaderLinkage_(const unsigned int shader)
     {
         glGetProgramInfoLog(shader, 1024, NULL, error_info);
         printf("\nOpenGL shader link error:\n%s", error_info);
-        LetoReportError(opengl_shader_compilation_failed);
+        LetoReport(gl_shader_comp);
     }
 }
 
@@ -121,7 +121,7 @@ shader_t* LetoLoadShader(const char* name)
 {
     if (name == NULL)
     {
-        LetoReportWarning(null_string);
+        LetoReport(null_param);
         return NULL;
     }
 
@@ -145,7 +145,7 @@ shader_t* LetoLoadShader(const char* name)
     free(vraw), free(fraw);
 
     shader_t* created_node = calloc(sizeof(shader_t), 1);
-    if (created_node == NULL) LetoReportError(failed_allocation);
+    if (created_node == NULL) LetoReport(failed_buffer);
     created_node->name = name;
 
     created_node->id = glCreateProgram();
@@ -162,7 +162,7 @@ void LetoUnloadShader(shader_t* node)
 {
     if (node == NULL)
     {
-        LetoReportWarning(null_object);
+        LetoReport(null_param);
         return;
     }
 
@@ -174,11 +174,10 @@ void LetoUseShader(const shader_t* shader)
 {
     if (shader == NULL)
     {
-        LetoReportWarning(null_object);
+        LetoReport(null_param);
         return;
     }
 
     glUseProgram(shader->id);
-    if (glGetError() != GL_NO_ERROR)
-        LetoReportError(opengl_malformed_shader);
+    if (glGetError() != GL_NO_ERROR) LetoReport(gl_shader_bad);
 }

@@ -40,7 +40,7 @@ shader_t* LetoGetShader(const char* name)
 {
     if (name == NULL)
     {
-        LetoReportWarning(null_string);
+        LetoReport(null_param);
         return application_renderer.shader_list[0];
     }
 
@@ -52,7 +52,7 @@ shader_t* LetoGetShader(const char* name)
         current_shader = application_renderer.shader_list[i];
     }
 
-    LetoReportWarning(no_such_shader);
+    LetoReport(no_such_value);
     return NULL;
 }
 
@@ -61,13 +61,13 @@ void LetoAddShader(const char* name)
     if (application_renderer.shader_list_size ==
         application_renderer.shader_list_occupied)
     {
-        LetoReportWarning(shader_list_full);
+        LetoReport(array_full);
         return;
     }
 
     if (name == NULL)
     {
-        LetoReportWarning(null_string);
+        LetoReport(null_param);
         return;
     }
 

@@ -18,9 +18,15 @@
 #ifndef __LETO__REPORTER__
 #define __LETO__REPORTER__
 
+// Boolean definitions as provided by the C standard.
 #include <stdbool.h>
+// Fixed-width integers as provided by the C standard.
 #include <stdint.h>
 
+/**
+ * @brief An enumerator describing each and every problem that could
+ * possibly occur within a Leto session.
+ */
 typedef enum
 {
     /**
@@ -40,12 +46,12 @@ typedef enum
     gl_init,
     gl_shader_comp,
     gl_shader_bad,
-    null_window,
-    window_null,
-    file_null,
+    null_window, // failed window
+    window_null, // window not yet created
+    file_null,   // file not yet created
     file_pos_get,
     file_pos_set,
-    file_read,
+    file_read, // sometimes failed file open
     file_write,
     /**
      * @defgroup Problem counter.
@@ -53,51 +59,83 @@ typedef enum
     problem_count,
 } problem_code_t;
 
-typedef struct
-{
-    const char* name;
-    const char* description;
-    bool fatal;
-    enum
-    {
-        /**
-         * @brief This flag represents that the problem was out of our
-         * control, like an allocation failure or failed file operation.
-         */
-        os = 0x111E,
-        glfw = 0x112E,
-        opengl = 0x113E,
-        leto = 0x114E
-    } type;
-} problem_t;
-
-static const problem_t problems[problem_count] = {
-    {"null_param", "a null parameter was passed", false, leto},
-    {"failed_buffer", "an allocation failure occurred", true, os},
-    {"small_buffer", "tried to access past buffer bounds", false, leto},
-    {"no_such_value", "no equal value found in list", false, leto},
-    {"array_full", "tried to assign past array bounds", false, leto},
-    {"time_error", "failed to get time", true, os},
-    {"glfw_init", "failed to initialize glfw", true, glfw},
-    {"glfw_monitor", "failed to get glfw monitor", true, glfw},
-    {"gl_init", "failed to initialize glad/opengl", true, opengl},
-    {"gl_shader_comp", "failed to compile shader", true, opengl},
-    {"gl_shader_bad", "failed to utilize shader", true, opengl},
-    {"window_null", "call made to nonexistent window", false, leto},
-    {"null_window", "failed to create window", true, glfw},
-    {"file_null", "call made to nonexistent file", false, leto},
-    {"file_pos_get", "failed to get file positioner", false, os},
-    {"file_pos_set", "failed to set file positioner", false, os},
-    {"file_read", "failed to read (from?) file", false, os},
-    {"file_write", "failed to write to file", false, os},
-};
-
+/**
+ * DESCRIPTION
+ *
+ * @brief Report a problem that occurred during the runtime of Leto. This
+ * is usually a wrapper around a print statement, but if the error should
+ * be fatal then the process is killed. See @file Reporter.c for the list
+ * of fatal errors.
+ *
+ * PARAMETERS
+ *
+ * @param problem The problem structure, containing all the needed
+ * information about the problem and its conception.
+ * @param file The file in which the report originated. This is assigned by
+ * CMake during the build process.
+ * @param function The name of the function that reported the error. This
+ * is typically retrieved via __func__.
+ * @param line The line on which the error occurred. This can be easily
+ * grabbed with the standard __LINE__ macro provided as per the C standard.
+ *
+ * RETURN VALUE
+ *
+ * @return If the passed problem is an error, this function will not return
+ * even void, and the process will quit when it ends.
+ *
+ * WARNINGS
+ *
+ * This is the reporter interface, but there is still one possible warning
+ * it can throw.
+ * @warning null_param -- If either of the strings passed to the function
+ * are NULL, we report this warning to protect the program from a fatal
+ * error.
+ *
+ * ERRORS
+ *
+ * Two errors can potentially be thrown by this function.
+ * @exception failed_buffer -- If the process has no more memory and the
+ * reported problem is a warning, this error will be thrown and the process
+ * will exit.
+ * @exception time_error -- If on Linux and the time-grab function fails
+ * for warning reporting, this error will be thrown and the process will
+ * exit.
+ *
+ */
 void LetoReport_(problem_code_t problem, const char* file,
                  const char* function, uint32_t line);
 
+/**
+ * @brief A macro to make reporting errors much easier, filling in all the
+ * ridiculous macros for you.
+ */
 #define LetoReport(problem)                                               \
     LetoReport_(problem, FILENAME, __func__, __LINE__)
 
+/**
+ * DESCRIPTION
+ *
+ * @brief Get the last reported problem's code identifier. This is provided
+ * to help functions potentially solve problems that happen within them or
+ * their child function calls.
+ *
+ * PARAMETERS
+ *
+ * Nothing of note.
+ *
+ * RETURN VALUE
+ *
+ * @return The last problem code reported.
+ *
+ * WARNINGS
+ *
+ * Nothing of note.
+ *
+ * ERRORS
+ *
+ * Nothing of note.
+ *
+ */
 problem_code_t LetoGetWarning(void);
 
 #endif // __LETO__REPORTER__

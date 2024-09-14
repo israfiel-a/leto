@@ -4,9 +4,9 @@
 name: Build/Test Leto
 on:
   push:
-    branches: [ "main","dev" ]
+    branches: [ "*" ]
   pull_request:
-    branches: [ "main","dev" ]
+    branches: [ "*" ]
 permissions:
     statuses: write
     contents: read
